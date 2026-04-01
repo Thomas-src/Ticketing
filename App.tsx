@@ -8,9 +8,10 @@ import MenuButton from '@/components/MenuButton';
 import Result from './screen/Result';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-
+import ScreenModeView, { ScreenModeContext } from "@/context/ScreenModeContext";
 export default function App() {
   return (
+    <ScreenModeView>
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={Home}
@@ -38,6 +39,7 @@ export default function App() {
         <Stack.Screen name="Game" component={Game} />
       </Stack.Navigator>
     </NavigationContainer>
+    </ScreenModeView>
   );
 }
 

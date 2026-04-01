@@ -2,32 +2,24 @@
 import { Switch, Text, View } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 import { styles } from '@/styles/styles';
-    import { useContext } from 'react';
-import { ThemeContext } from '@/context/ThemeContext';
+import { useCallback, useContext } from 'react';
+import { ScreenModeContext } from '@/context/ScreenModeContext';
 
+export default function Settings() {
+    const { screenMode, setScreenMode } = useContext(ScreenModeContext);
 
-
-export default function Setting() {
-    const { isEnabled, setIsEnabled } = useContext(ThemeContext);
-
-    const toggleSwitch = () => setIsEnabled(isEnabled => !isEnabled);
-
+    const switchValueChange = useCallback(() => {
+        setScreenMode(!screenMode);
+        console.log("Change value screen mode " + screenMode)
+    }, [screenMode])
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Activer le mode clair</Text>
-            <SafeAreaProvider>
-                <SafeAreaView style={styles.container}>
-                    <Switch
-                        trackColor={{ false: '#767577', true: '#81b0ff' }}
-                        thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-                        ios_backgroundColor="#3e3e3e"
-                        onValueChange={toggleSwitch}
-                        value={isEnabled}
-                    />
-                </SafeAreaView>
-            </SafeAreaProvider>
-
+            <View style={styles.containerHorizontal}>
+                <Text>Screen Mode : </Text>
+                <Switch onValueChange={switchValueChange}
+                    value={screenMode} />
+            </View>
         </View>
     );
 }
