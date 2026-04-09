@@ -1,12 +1,17 @@
 import { createContext, ReactNode, useState } from "react";
 
-export const ScreenModeContext = createContext(false);
+type ScreenModeContextType = {
+  screenMode: boolean;
+  setScreenMode: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-export default function ScreenModeView({children} : ReactNode | ReactNode[]) {
+export const ScreenModeContext = createContext<ScreenModeContextType | undefined>(undefined);
+
+export default function ScreenModeView({ children }: { children: ReactNode | ReactNode[] }) {
   const [screenMode, setScreenMode] = useState(false);
 
   return (
-    <ScreenModeContext.Provider value={{screenMode, setScreenMode}}>
+    <ScreenModeContext.Provider value={{ screenMode, setScreenMode }}>
       {children}
     </ScreenModeContext.Provider>
   );
