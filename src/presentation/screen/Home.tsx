@@ -13,7 +13,12 @@ export default function Home({ navigation }: Props) {
     return (
         <View style={styles.screen}>
             <Text style={styles.pageTitle}>Bonsoir John,</Text>
-            <EventCard title={"Test"} description={"Ceci est une descirption"}></EventCard>
+            <EventCard
+                title={"Concert Franz Ferdinand"}
+                description={"Ceci est une descirption"}
+                date={new Date(2026,3,2,21,0)}
+                location={"Bruxelles ING arena"}>
+            </EventCard>
         </View>
     );
 }
