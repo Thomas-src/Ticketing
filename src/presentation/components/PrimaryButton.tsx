@@ -1,5 +1,5 @@
 import { Pressable, Text } from 'react-native';
-import { styles } from '../styles';
+import { styles } from '../../../styles';
 type Props = {
     title: string;
     onPress: () => void;
