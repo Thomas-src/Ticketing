@@ -39,3 +39,6 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+/.idea/modules.xml
+/.idea/ticketing.iml
+/.idea/vcs.xml
