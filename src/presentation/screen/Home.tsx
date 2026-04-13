@@ -11,9 +11,9 @@ type Props = NativeStackScreenProps<RootStackParamList>;
 
 export default function Home({ navigation }: Props) {
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Bievenue sur la page d'accueil!</Text>
-            <EventCard title={"Test"} image={"Image/7b66faf1ea70ea3ff5067945843502dfdb355032.png"}></EventCard>
+        <View style={styles.screen}>
+            <Text style={styles.pageTitle}>Bonsoir John,</Text>
+            <EventCard title={"Test"} description={"Ceci est une descirption"}></EventCard>
         </View>
     );
 }

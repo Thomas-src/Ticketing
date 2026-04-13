@@ -3,17 +3,15 @@ import { styles } from "../../../styles";
 
 type Props = {
     title: string;
-    image: string;
+    description: string;
 }
 
-export default function EventCard({ title, image }: Props) {
+export default function EventCard({ title, description}: Props) {
     return (
-        <View style={styles.card}>
-            <Image
-                src={image}
-                style={styles.image}
-            />
-            <Text style={styles.title2}>{title}</Text>
+        <View style={[styles.eventCard, styles.debugBorder]}>
+            <Image source={require("../../../assets/Images/concert.png")} style={styles.eventCardImage}></Image>
+            <Text style={styles.eventCardTitle}>{title}</Text>
+            <Text>{description}</Text>
         </View>
     );
 }
