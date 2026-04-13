@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Button, Pressable, Text, View } from 'react-native';
 import { styles } from '../styles';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/RootStackParamList';
+import { RootStackParamList } from '../../types/RootStackParamList';
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 

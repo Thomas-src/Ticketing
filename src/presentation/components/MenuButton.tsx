@@ -1,6 +1,6 @@
 import React from "react";
 import { Pressable, Text, StyleSheet } from "react-native";
-import {styles} from "../../../styles";
+import {styles} from "../styles";
 
 type Props = {
   title: string;

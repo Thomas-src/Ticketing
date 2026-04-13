@@ -7,6 +7,9 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  footer: {
+    backgroundColor: '#fff',
+},
   containerHorizontal: {
     flex: 1,
     flexDirection: "row",
@@ -143,5 +146,5 @@ export const styles = StyleSheet.create({
     padding: 8,
     fontSize: 14,
     fontWeight: "bold",
-  },
+  }
 });
