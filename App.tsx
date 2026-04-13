@@ -1,10 +1,10 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { RootStackParamList } from './types/RootStackParamList';
-import Home from './screen/Home';
+import { RootStackParamList } from './src/types/RootStackParamList';
+import Home from './src/presentation/screen/Home';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-import ScreenModeView, { ScreenModeContext } from "./context/ScreenModeContext";
+import ScreenModeView, { ScreenModeContext } from "./src/presentation/context/ScreenModeContext";
 export default function App() {
   return (
     <ScreenModeView>
