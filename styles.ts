@@ -127,5 +127,21 @@ export const styles = StyleSheet.create({
   swipeBlank: {
     height: 30,
     backgroundColor: "transparent",
-  }
+  },
+  card: {
+    width: 160,
+    borderRadius: 12,
+    backgroundColor: "#fff",
+    overflow: "hidden",
+    elevation: 3, // Android shadow
+  },
+  image: {
+    width: "100%",
+    height: 100,
+  },
+  title2: {
+    padding: 8,
+    fontSize: 14,
+    fontWeight: "bold",
+  },
 });
