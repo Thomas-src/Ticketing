@@ -2,5 +2,5 @@ export type RootStackParamList = {
     Home: undefined;
     Settings: undefined;
     Game: { title: string };
-    Result: undefined;
+    Tickets: undefined;
 };
