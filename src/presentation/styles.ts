@@ -14,6 +14,21 @@ export const styles = StyleSheet.create({
         paddingTop: 16,
         paddingHorizontal: 16,
     },
+    tabBarItemStyle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    ticketIcon: {
+        position: 'absolute',
+        top: -48,
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+        backgroundColor: '#FFFFFF',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     pageTitle: {
         padding: 8,
         fontSize: 24,
