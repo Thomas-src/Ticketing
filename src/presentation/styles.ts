@@ -12,6 +12,10 @@ export const styles = StyleSheet.create({
     spaceRound: {
         justifyContent: 'space-around',
     },
+    center: {
+        textAlign: 'center',
+        marginTop: 80,
+    },
     button: {
         paddingHorizontal: 6,
         paddingVertical: 10,
@@ -37,7 +41,9 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'red'
     },
-    screen: {},
+    screen: {
+        flex: 1,
+    },
     title: {
         fontSize: 16,
     },

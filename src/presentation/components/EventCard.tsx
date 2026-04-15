@@ -1,6 +1,9 @@
 import {View, Text, Image, Pressable, FlatList} from "react-native";
 import { styles } from "../styles";
 import { MapPin } from "lucide-react-native";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {RootStackParamList} from "../../types/RootStackParamList";
+import {useNavigation} from "@react-navigation/native";
 
 type Props = {
     title: string;
@@ -8,9 +11,13 @@ type Props = {
     endDate: Date;
     location: string;
     eventTags: string[]; // TODO peut-etre changer en objet concret ?
+    id : string;
 }
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-export default function EventCard({ title, beginDate, endDate, location, eventTags}: Props) {
+export default function EventCard({ title, beginDate, endDate, location, eventTags, id}: Props) {
+    const navigation = useNavigation<NavigationProp>();
+
     const formatHour = (date: Date) => {
         return date.toLocaleTimeString("fr-BE", {
             hour: "2-digit",
@@ -43,7 +50,10 @@ export default function EventCard({ title, beginDate, endDate, location, eventTa
 
                 <View style={styles.ecContainerBut}>
                     <View style={styles.ecButtonContainer}>
-                        <Pressable style={styles.button} onPress={() => navigate("Reservation")}>
+                        {/*TODO rediriger avec le bon eveneement*/}
+                        <Pressable style={styles.button} onPress={() => navigation.navigate("Reservation", {
+                            eventId: id
+                        })}>
                             <Text style={styles.buttonText}>Réserver</Text>
                         </Pressable>
 
