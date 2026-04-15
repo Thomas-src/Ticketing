@@ -3,7 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootStackParamList} from './src/types/RootStackParamList';
 import ScreenModeView from "./src/presentation/context/ScreenModeContext";
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import TabNavigator from "./src/presentation/components/TabNavigator";
+import RootNavigator from "./src/presentation/components/RootNavigator";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -12,7 +12,7 @@ export default function App() {
         <ScreenModeView>
             <SafeAreaProvider>
                 <NavigationContainer>
-                    <TabNavigator/>
+                    <RootNavigator/>
                 </NavigationContainer>
             </SafeAreaProvider>
         </ScreenModeView>

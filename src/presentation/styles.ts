@@ -23,6 +23,10 @@ export const styles = StyleSheet.create({
         color: colors.lightBlue,
         fontWeight: 'bold',
     },
+    buttonWhiteText: {
+        color: colors.lightBlue,
+        fontWeight: 'bold',
+    },
 
     debugBorder: {
         borderWidth: 1,
@@ -95,6 +99,17 @@ export const styles = StyleSheet.create({
         marginTop: 8,
         color: 'white',
     },
+    settingCard: {
+        width: "100%",
+        marginVertical: 8,
+    },
+    settingButton: {
+        height: 68,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 10,
+        backgroundColor: colors.lightBlue,
+    },
     ecContainerBut: {
         maxWidth: '100%',
         width: '40%',
@@ -105,5 +120,5 @@ export const styles = StyleSheet.create({
     ecButtonContainer: {
         padding: 16,
         width: '65%',
-    }
+    },
 });
