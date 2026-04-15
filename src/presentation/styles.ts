@@ -90,7 +90,7 @@ export const styles = StyleSheet.create({
     },
     ecContainerInf: {
         paddingVertical: 8,
-        paddingHorizontal: 8,
+        paddingHorizontal: 16,
         width: '60%',
     },
     ecTitle: {
@@ -112,6 +112,17 @@ export const styles = StyleSheet.create({
     },
     pinIcon: {
         color: 'white',
+    },
+    settingCard: {
+        width: "100%",
+        marginVertical: 8,
+    },
+    settingButton: {
+        height: 68,
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 10,
+        backgroundColor: colors.lightBlue,
     },
     ecContainerBut: {
         maxWidth: '100%',
