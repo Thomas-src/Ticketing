@@ -13,11 +13,20 @@ export const styles = StyleSheet.create({
         justifyContent: 'space-around',
     },
     button: {
-        padding: 6,
+        paddingHorizontal: 6,
+        paddingVertical: 10,
         backgroundColor: 'white',
         borderRadius: 8,
         width: 'auto',
         alignItems: 'center',
+    },
+    tag: {
+        fontSize: 12,
+        color: colors.lightBlue,
+        padding: 2,
+        borderRadius: 5,
+        backgroundColor: 'white',
+        textAlign: 'center',
     },
     buttonText: {
         color: colors.lightBlue,
@@ -81,7 +90,7 @@ export const styles = StyleSheet.create({
     },
     ecContainerInf: {
         paddingVertical: 8,
-        paddingHorizontal: 16,
+        paddingHorizontal: 8,
         width: '60%',
     },
     ecTitle: {
@@ -91,19 +100,32 @@ export const styles = StyleSheet.create({
     ecDate: {
         color: 'white',
     },
+    eclocationContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 8,
+    },
     ecLocation: {
         marginTop: 8,
+        color: 'white',
+        marginLeft: 6,
+    },
+    pinIcon: {
         color: 'white',
     },
     ecContainerBut: {
         maxWidth: '100%',
         width: '40%',
         maxHeight: 200,
-        paddingVertical: 8,
-        paddingHorizontal: 6,
+        padding: 6,
+        justifyContent: 'space-between'
     },
     ecButtonContainer: {
-        padding: 16,
-        width: '65%',
+        padding: 3,
+        width: '100%',
+        alignItems: 'flex-end',
+    },
+    ecTagsContainer: {
+        alignItems: 'flex-end',
     }
 });

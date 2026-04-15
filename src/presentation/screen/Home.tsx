@@ -15,9 +15,10 @@ export default function Home({ navigation }: Props) {
             <Text style={styles.pageTitle}>Bonsoir John,</Text>
             <EventCard
                 title={"Concert Franz Ferdinand"}
-                description={"Ceci est une descirption"}
-                date={new Date(2026,3,2,21,0)}
-                location={"Bruxelles ING arena"}>
+                beginDate={new Date(2026,3,2,21,0)}
+                endDate={new Date(2026,3,3, 0,0)}
+                location={"Bruxelles ING arena"}
+                eventTags={["concert", "musique"]}>
             </EventCard>
         </View>
     );
