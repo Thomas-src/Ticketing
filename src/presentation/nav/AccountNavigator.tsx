@@ -4,9 +4,9 @@ import Settings from "../screen/Settings";
 import Signup from "../screen/account/Signup";
 import Login from "../screen/account/Login";
 import Layout from "../components/_layout";
-import {AccountStackParamList} from "../../types/RootStackParamList";
+import {RootStackParamList} from "../../types/RootStackParamList";
 
-const Stack = createNativeStackNavigator<AccountStackParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function withLayout(Component: React.ComponentType<any>) {
     return function WrappedScreen(props: any) {

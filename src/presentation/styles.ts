@@ -6,6 +6,44 @@ export const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
     },
+    flexGrow: {
+        flexGrow: 1
+    },
+    colorRed: {
+        color: colors.red
+    },
+    alignCenter: {
+        alignItems: 'center',
+    },
+    link: {
+        color: 'white',
+        textAlign: 'center',
+        marginTop: 15,
+        textDecorationLine: 'underline',
+    },
+    label: {fontWeight: 'bold', marginBottom: 5, color: colors.white},
+    input: {
+        borderWidth: 1,
+        color: colors.white,
+        borderColor: colors.white,
+        padding: 12,
+        marginBottom: 15,
+        width: '100%',
+        borderRadius: 8,
+    },
+    rectangle: {
+        flex: 1,
+        padding: 20,
+        marginBottom: 20,
+        backgroundColor: colors.blue,
+        borderRadius: 10,
+        alignItems: 'stretch',
+        color: colors.white,
+    },
+    rectangleTitle: {
+        fontSize: 16,
+        color: colors.white,
+    },
     spaceBtw: {
         justifyContent: 'space-between',
     },
