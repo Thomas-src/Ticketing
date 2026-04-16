@@ -4,12 +4,11 @@ import {Text, View} from "react-native";
 import {HouseIcon, TicketsIcon, UserIcon} from "lucide-react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
 import Layout from '../components/_layout';
+import AccountNavigator from './AccountNavigator';
 
 import Home from '../screen/Home';
 import Tickets from '../screen/Tickets';
-import Settings from '../screen/Settings';
 
-import {ScreenType} from "../../types/ScreenType";
 import {styles} from "../styles";
 import {colors} from "../colors";
 
@@ -22,24 +21,6 @@ function withLayout(Component: React.ComponentType<any>) {
         );
     };
 }
-
-const navigations: ScreenType[] = [
-    {
-        title: 'Accueil',
-        component: Home,
-        icon: HouseIcon
-    },
-    {
-        title: 'Tickets',
-        component: Tickets,
-        icon: TicketsIcon
-    },
-    {
-        title: 'Mon compte',
-        component: Settings,
-        icon: UserIcon
-    }
-];
 
 const Tab = createBottomTabNavigator();
 
@@ -67,60 +48,61 @@ export default function TabNavigator() {
                 tabBarInactiveTintColor: colors.inactive,
             }}
         >
-            {navigations.map(({title, component, icon: Icon}, index) => {
-                const isCenter = index === 1;
-
-                return (
-                    <Tab.Screen
-                        key={title}
-                        name={title}
-                        component={withLayout(component)}
-                        options={{
-                            tabBarLabel: ({focused}) => {
-                                if (isCenter) {
-                                    return null;
-                                }
-                                return (
-                                    <Text
-                                        style={{
-                                            fontSize: 12,
-                                            color: colors.white,
-                                            marginTop: 2,
-                                            fontWeight: focused ? '600' : '400',
-                                        }}
-                                    >
-                                        {title}
-                                    </Text>
-                                );
-                            },
-
-                            tabBarIcon: ({color, focused}) => {
-                                if (isCenter) {
-                                    return (
-                                        <View style={styles.ticketIcon}>
-                                            <Icon color={colors.blue} size={28}/>
-                                            <Text
-                                                style={{
-                                                    fontSize: 12,
-                                                    color: colors.blue,
-                                                    marginTop: 2,
-                                                    fontWeight: focused ? '600' : '400',
-                                                }}
-                                            >
-                                                {title}
-                                            </Text>
-                                        </View>
-                                    );
-                                }
-
-                                return (
-                                    <Icon color={color} size={22}/>
-                                );
-                            },
-                        }}
-                    />
-                );
-            })}
+            <Tab.Screen
+                name="Accueil"
+                component={withLayout(Home)}
+                options={{
+                    tabBarLabel: ({focused}) => (
+                        <Text style={{
+                            fontSize: 12,
+                            color: colors.white,
+                            marginTop: 2,
+                            fontWeight: focused ? '600' : '400'
+                        }}>
+                            Accueil
+                        </Text>
+                    ),
+                    tabBarIcon: ({color}) => <HouseIcon color={color} size={22}/>,
+                }}
+            />
+            <Tab.Screen
+                name="Tickets"
+                component={withLayout(Tickets)}
+                options={{
+                    tabBarLabel: () => null,
+                    tabBarIcon: ({focused}) => (
+                        <View style={styles.ticketIcon}>
+                            <TicketsIcon color={colors.blue} size={28}/>
+                            <Text style={{
+                                fontSize: 12,
+                                color: colors.blue,
+                                marginTop: 2,
+                                fontWeight: focused ? '600' : '400'
+                            }}>
+                                Tickets
+                            </Text>
+                        </View>
+                    ),
+                }}
+            />
+            {/* AccountNavigator gère Settings, Signup et Login — le footer reste visible */}
+            <Tab.Screen
+                name="Mon compte"
+                component={AccountNavigator}
+                options={{
+                    tabBarLabel: ({focused}) => (
+                        <Text style={{
+                            fontSize: 12,
+                            color: colors.white,
+                            marginTop: 2,
+                            fontWeight: focused ? '600' : '400'
+                        }}>
+                            Mon compte
+                        </Text>
+                    ),
+                    tabBarIcon: ({color}) => <UserIcon color={color} size={22}/>,
+                }}
+            />
         </Tab.Navigator>
     );
 }

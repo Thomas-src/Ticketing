@@ -22,7 +22,6 @@ type Props = {
     navigation: NativeStackNavigationProp<RootStackParamList>;
 };
 export default function SettingNavigator({navigation}: Props) {
-    console.log(navigation.getState());
     return (
         <View style={styles.container}>
             <FlatList

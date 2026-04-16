@@ -8,7 +8,7 @@ type Props = NativeStackScreenProps<RootStackParamList>;
 export default function Signup({navigation}: Props) {
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Bienvenue sur la page de tickets!</Text>
+            <Text style={styles.title}>Bienvenue sur la page d'inscription.</Text>
         </View>
     );
 }

@@ -5,7 +5,7 @@ import {RootStackParamList} from "./RootStackParamList";
 export type ScreenType = {
     title: string;
     component: ComponentType<any>;
-    icon?: LucideIcon;
+    icon: LucideIcon;
 };
 
 export type SettingType = {
