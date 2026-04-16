@@ -2,10 +2,11 @@ import React from "react";
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import Settings from "../screen/Settings";
 import Signup from "../screen/account/Signup";
-import Login from "../screen/account/Signup"; // remplacer par le bon import Login si disponible
-import Layout from "./_layout";
+import Login from "../screen/account/Login";
+import Layout from "../components/_layout";
+import {AccountStackParamList} from "../../types/RootStackParamList";
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<AccountStackParamList>();
 
 function withLayout(Component: React.ComponentType<any>) {
     return function WrappedScreen(props: any) {

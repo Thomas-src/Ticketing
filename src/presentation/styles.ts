@@ -12,18 +12,27 @@ export const styles = StyleSheet.create({
     spaceRound: {
         justifyContent: 'space-around',
     },
+    center: {
+        textAlign: 'center',
+        marginTop: 80,
+    },
     button: {
-        padding: 6,
+        paddingHorizontal: 6,
+        paddingVertical: 10,
         backgroundColor: 'white',
         borderRadius: 8,
         width: 'auto',
         alignItems: 'center',
     },
-    buttonText: {
+    tag: {
+        fontSize: 12,
         color: colors.lightBlue,
-        fontWeight: 'bold',
+        padding: 2,
+        borderRadius: 5,
+        backgroundColor: 'white',
+        textAlign: 'center',
     },
-    buttonWhiteText: {
+    buttonText: {
         color: colors.lightBlue,
         fontWeight: 'bold',
     },
@@ -32,7 +41,9 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'red'
     },
-    screen: {},
+    screen: {
+        flex: 1,
+    },
     title: {
         fontSize: 16,
     },
@@ -95,9 +106,18 @@ export const styles = StyleSheet.create({
     ecDate: {
         color: 'white',
     },
+    eclocationContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 8,
+    },
+    buttonWhiteText: {
+        color: 'white',
+    },
     ecLocation: {
         marginTop: 8,
         color: 'white',
+        marginLeft: 6,
     },
     settingCard: {
         width: "100%",
@@ -114,11 +134,15 @@ export const styles = StyleSheet.create({
         maxWidth: '100%',
         width: '40%',
         maxHeight: 200,
-        paddingVertical: 8,
-        paddingHorizontal: 6,
+        padding: 6,
+        justifyContent: 'space-between'
     },
     ecButtonContainer: {
-        padding: 16,
-        width: '65%',
+        padding: 3,
+        width: '100%',
+        alignItems: 'flex-end',
     },
+    ecTagsContainer: {
+        alignItems: 'flex-end',
+    }
 });

@@ -1,6 +1,6 @@
 import {ComponentType} from "react";
 import {LucideIcon} from "lucide-react-native";
-import {RootStackParamList} from "./RootStackParamList";
+import {AccountStackParamList} from "./RootStackParamList";
 
 export type ScreenType = {
     title: string;
@@ -11,5 +11,5 @@ export type ScreenType = {
 export type SettingType = {
     title: string;
     color: string;
-    redirection: keyof RootStackParamList;
+    redirection: keyof AccountStackParamList;
 };
