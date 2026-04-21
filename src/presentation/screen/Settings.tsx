@@ -1,36 +1,36 @@
-import {SettingType} from "../../types/ScreenType";
 import {FlatList, View} from "react-native";
 import {styles} from "../styles";
 import SettingCard from "../components/SettingCard";
 import {RootStackParamList} from "../../types/RootStackParamList";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {colors} from "../colors";
+import {useAuth} from "../context/AuthContext";
+import {getUserNavParameters} from "../nav/SettingsRouteList"
+import {SettingType} from "../../types/ScreenType";
+import AuthRepositoryPocketBase from "../../infrastructure/repository/AuthRepositoryPocketBase";
 
-const navigations: SettingType[] = [
-    {
-        title: "S'inscrire",
-        redirection: "Signup",
-        color: colors.blue
-    },
-    {
-        title: "Se connecter",
-        redirection: "Login",
-        color: colors.blue
-    }
-];
-type Props = {
-    navigation: NativeStackNavigationProp<RootStackParamList>;
-};
+const authRepository = new AuthRepositoryPocketBase();
+type Props = { navigation: NativeStackNavigationProp<RootStackParamList>; };
 export default function Settings({navigation}: Props) {
+    const {user} = useAuth();
+    const handlePress = async (setting: SettingType) => {
+        if (setting.action) {
+            await authRepository.logout();
+            navigation.reset({index: 0, routes: [{name: 'Login'}]})
+        } else {
+            navigation.navigate(setting.redirection as any); // todo fix any
+        }
+
+    };
+
     return (
         <View style={styles.container}>
             <FlatList
-                data={navigations}
+                data={getUserNavParameters(user)}
                 renderItem={({item}) =>
                     <SettingCard
                         title={item.title}
                         backgroundColor={item.color}
-                        onPress={() => navigation.navigate(item.redirection as any)}
+                        onPress={() => handlePress(item)}
                     />
                 }/>
         </View>

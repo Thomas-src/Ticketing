@@ -1,6 +1,8 @@
 import {FlatList, Text, View} from 'react-native';
 import {styles} from '../styles';
 import EventCard from "../components/EventCard";
+import {useAuth} from "../context/AuthContext";
+
 
 const events = [
     {
@@ -37,10 +39,19 @@ const events = [
     },
 ];
 
+const getMessage = (): string => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Bonjour ";
+    if (hour < 18) return "Bon après-midi ";
+    return "Bonsoir ";
+};
+
 export default function Home() {
+    const {user} = useAuth();
+
     return (
         <View style={styles.screen}>
-            <Text style={styles.pageTitle}>Bonsoir John,</Text>
+            <Text style={styles.pageTitle}>{getMessage() + (user?.name ?? "")} </Text>
 
             <FlatList
                 data={events}
