@@ -1,4 +1,4 @@
-import {Text, View} from 'react-native';
+import {StyleSheet,Text, View} from 'react-native';
 import {useEffect, useState} from "react";
 
 import ContextDetailsCard from "../components/eventDetails/ContextDetailsCard";
@@ -12,6 +12,7 @@ import {RootStackParamList} from '../../types/RootStackParamList';
 import EventRepositoryPocketBase from "../../infrastructure/repository/EventRepositoryPocketBase";
 import DisplayEventDetails from "../../application/usecase/DisplayEventDetails";
 import {Event} from "../../domain/core/Event";
+import {Tag} from "../../domain/core/Tag";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Reservation">;
 
@@ -49,16 +50,30 @@ export default function EventDetails({route}: Props) {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, actual.container]}>
 
             <ContextDetailsCard
                 name={actualEvent?.name}
                 description={actualEvent?.description}
-                tags={actualEvent?.tags.toString()}
+                tags={actualEvent?.tags.map(t => Tag[t])}
                 seatsLeft={actualEvent?.seatsLeft}
+                image={actualEvent?.imageUrl}
             />
-            <ContextWhereCard />
-            <ContextWhenCard />
+            <ContextWhenCard
+                beginDate={actualEvent?.beginDate}
+                endDate={actualEvent?.endDate}
+            />
+            <ContextWhereCard
+
+            />
         </View>
     );
 }
+
+const actual = StyleSheet.create({
+    container: {
+        display: "flex",
+        flexDirection: "column",
+        gap: 25
+    }
+})

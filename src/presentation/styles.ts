@@ -64,14 +64,14 @@ export const styles = StyleSheet.create({
     },
     tag: {
         fontSize: 12,
-        color: colors.lightBlue,
+        color: colors.darkBlue,
         padding: 2,
         borderRadius: 5,
         backgroundColor: 'white',
         textAlign: 'center',
     },
     buttonText: {
-        color: colors.lightBlue,
+        color: colors.darkBlue,
         fontWeight: 'bold',
     },
 
@@ -113,7 +113,7 @@ export const styles = StyleSheet.create({
         paddingBottom: 16
     },
     eventCard: {
-        backgroundColor: colors.lightBlue,
+        backgroundColor: colors.darkBlue,
         width: '90%',
         margin: 'auto',
         borderRadius: 16,
@@ -166,7 +166,7 @@ export const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 10,
-        backgroundColor: colors.lightBlue,
+        backgroundColor: colors.darkBlue,
     },
     ecContainerBut: {
         maxWidth: '100%',

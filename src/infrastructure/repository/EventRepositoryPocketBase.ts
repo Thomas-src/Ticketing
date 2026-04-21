@@ -11,6 +11,7 @@ export default class EventRepositoryPocketBase implements IEventRepository{
             "Ceci est une description",
             [Tag.concert, Tag.musique],
             956,
+            "../../assets/Images/concert.png",
             new Date(2026, 3, 1, 20, 0),
             new Date(2026, 3, 2, 0, 0),
             new Address("ING Arena", "Avenue des Miramar", "Bruxelles", 1020, 1)
