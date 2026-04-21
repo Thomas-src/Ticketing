@@ -2,7 +2,7 @@ import User from "../../domain/core/User";
 import IUserRepository from "../../domain/repository/IUserRepository";
 import {pb} from "../pocketbaseClient";
 
-const collectionName = "users";
+const collectionName = "members";
 
 export default class UserRepositoryPocketBase implements IUserRepository {
 
@@ -17,7 +17,7 @@ export default class UserRepositoryPocketBase implements IUserRepository {
                 role: user.role,
             });
 
-            await pb.collection("users").authWithPassword(user.email, password);
+            await pb.collection(collectionName).authWithPassword(user.email, password);
         } catch (error: any) {
             console.error(error);
             console.error("Error pocketbase:", error?.response || error);

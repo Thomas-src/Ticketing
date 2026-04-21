@@ -6,14 +6,15 @@ import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {useAuth} from "../context/AuthContext";
 import {getUserNavParameters} from "../nav/SettingsRouteList"
 import {SettingType} from "../../types/ScreenType";
+import AuthRepositoryPocketBase from "../../infrastructure/repository/AuthRepositoryPocketBase";
 
-
+const authRepository = new AuthRepositoryPocketBase();
 type Props = { navigation: NativeStackNavigationProp<RootStackParamList>; };
 export default function Settings({navigation}: Props) {
-    const {user, logout} = useAuth();
-    const handlePress = (setting: SettingType) => {
+    const {user} = useAuth();
+    const handlePress = async (setting: SettingType) => {
         if (setting.action) {
-            logout();
+            await authRepository.logout();
             navigation.reset({index: 0, routes: [{name: 'Login'}]})
         } else {
             navigation.navigate(setting.redirection as any); // todo fix any

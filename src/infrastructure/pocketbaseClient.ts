@@ -14,4 +14,4 @@ const store = new AsyncAuthStore({
 });
 
 
-export const pb = new PocketBase('http://127.0.0.1:8090', store);
+export const pb = new PocketBase('http://142.132.231.90:3003/', store);

@@ -3,12 +3,12 @@ import IAuthRepository from "../../domain/repository/IAuthRepository";
 import User from "../../domain/core/User";
 import {Role} from "../../domain/core/Role";
 
-
+const collectionName = "members";
 export default class AuthRepositoryPocketBase implements IAuthRepository {
     async login(email: string, password: string): Promise<User> {
         try {
             const authData = await pb
-                .collection("users")
+                .collection(collectionName)
                 .authWithPassword(email, password);
 
             const r = authData.record;
