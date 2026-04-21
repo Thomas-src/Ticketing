@@ -18,6 +18,7 @@ export default class UserRepositoryPocketBase implements IUserRepository {
             });
 
             await pb.collection(collectionName).authWithPassword(user.email, password);
+            console.log("Saved user :" + user.email);
         } catch (error: any) {
             console.error(error);
             console.error("Error pocketbase:", error?.response || error);

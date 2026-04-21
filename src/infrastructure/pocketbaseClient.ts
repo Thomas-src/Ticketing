@@ -1,7 +1,5 @@
 import PocketBase, {AsyncAuthStore} from "pocketbase";
-
 import eventsource from 'react-native-sse';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // load the polyfill
@@ -14,4 +12,4 @@ const store = new AsyncAuthStore({
 });
 
 
-export const pb = new PocketBase('http://142.132.231.90:3003/', store);
+export const pb = new PocketBase("https://pocketbase.tomstudio.eu", store);
