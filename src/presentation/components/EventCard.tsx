@@ -5,20 +5,16 @@ import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 import {RootStackParamList} from "../../types/RootStackParamList";
 import {useNavigation} from "@react-navigation/native";
 import {colors} from "../colors";
+import {Event} from "../../domain/core/Event"
 
 type Props = {
-    title: string;
-    beginDate: Date;
-    endDate: Date;
-    location: string;
-    eventTags: string[]; // TODO peut-etre changer en objet concret ?
-    id: string;
-}
+    event: Event;
+};
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-export default function EventCard({title, beginDate, endDate, location, eventTags, id}: Props) {
+export default function EventCard({event}: Props) {
     const navigation = useNavigation<NavigationProp>();
-
+    const {id, title, startAt, tags, address} = event;
     const formatHour = (date: Date) => {
         return date.toLocaleTimeString("fr-BE", {
             hour: "2-digit",
@@ -30,7 +26,7 @@ export default function EventCard({title, beginDate, endDate, location, eventTag
         <View style={styles.eventCard}>
 
             <View style={styles.ecimageContainer}>
-                <Image source={require("../../../assets/Images/concert.png")} style={styles.image}></Image>
+                <Image source={{uri: event.image}} style={styles.image}></Image>
             </View>
 
             <View style={styles.flex}>
@@ -38,20 +34,19 @@ export default function EventCard({title, beginDate, endDate, location, eventTag
                 <View style={styles.ecContainerInf}>
                     <Text style={styles.ecTitle}>{title}</Text>
                     <Text style={styles.ecDate}>
-                        {beginDate.toLocaleDateString("fr-BE", {
+                        {startAt.toLocaleDateString("fr-BE", {
                             day: "numeric",
                             month: "long",
-                        })} à {formatHour(beginDate)} - {formatHour(endDate)}
+                        })} à {formatHour(startAt)} - {formatHour(startAt)}
                     </Text>
                     <View style={styles.eclocationContainer}>
                         <MapPin color={colors.white}/>
-                        <Text style={styles.ecLocation}>{location}</Text>
+                        <Text style={styles.ecLocation}>{address.name}</Text>
                     </View>
                 </View>
 
                 <View style={styles.ecContainerBut}>
                     <View style={styles.ecButtonContainer}>
-                        {/*TODO rediriger avec le bon eveneement*/}
                         <Pressable style={styles.button} onPress={() => navigation.navigate("Reservation", {
                             eventId: id
                         })}>
@@ -62,10 +57,10 @@ export default function EventCard({title, beginDate, endDate, location, eventTag
                     <View style={styles.ecTagsContainer}>
                         <FlatList
                             horizontal={true}
-                            data={eventTags}
+                            data={tags}
                             keyExtractor={(item, index) => index.toString()}
                             renderItem={({item}) => (
-                                <Text style={styles.tag}>{item}</Text>
+                                <Text style={styles.tag}>{item.name}</Text>
                             )}
                             contentContainerStyle={{gap: 3}}
                         />
