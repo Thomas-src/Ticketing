@@ -2,42 +2,13 @@ import {FlatList, Text, View} from 'react-native';
 import {styles} from '../styles';
 import EventCard from "../components/EventCard";
 import {useAuth} from "../context/AuthContext";
+import EventsRepositoryPocketBase from "../../infrastructure/repository/EventsRepositoryPocketBase";
+import GetAvaiblesEvents from "../../application/usecase/GetAvaiblesEvents";
+import {Event} from "../../domain/core/Event";
+import {useEffect, useState} from "react";
 
-
-const events = [
-    {
-        id: "1",
-        title: "Concert Franz Ferdinand",
-        beginDate: new Date(2026, 3, 2, 21, 0),
-        endDate: new Date(2026, 3, 3, 0, 0),
-        location: "Bruxelles ING Arena",
-        eventTags: ["concert", "musique"],
-    },
-    {
-        id: "2",
-        title: "Les ardentes",
-        beginDate: new Date(2026, 6, 4, 12, 0),
-        endDate: new Date(2026, 6, 4, 23, 0),
-        location: "Rocourt",
-        eventTags: ["festival", "RAP"],
-    },
-    {
-        id: "3",
-        title: "Garden HEC",
-        beginDate: new Date(2026, 6, 18, 10, 30),
-        endDate: new Date(2026, 6, 18, 23, 0),
-        location: "Liège carré",
-        eventTags: ["Etudiant", "Alcool"],
-    },
-    {
-        id: "4",
-        title: "ShowCase Gims",
-        beginDate: new Date(2026, 4, 5, 18, 0),
-        endDate: new Date(2026, 4, 5, 20, 0),
-        location: "Bruxelles ING Arena",
-        eventTags: ["Concert", "rap"],
-    },
-];
+const repo = new EventsRepositoryPocketBase();
+const avaiblesEvents = new GetAvaiblesEvents(repo);
 
 const getMessage = (): string => {
     const hour = new Date().getHours();
@@ -48,23 +19,58 @@ const getMessage = (): string => {
 
 export default function Home() {
     const {user} = useAuth();
+    const date = new Date();
+    const [events, setEvents] = useState<Event[]>([]);
+    const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const loadEvents = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const result = await avaiblesEvents.execute(date);
+                console.log(result);
+                setEvents(result);
 
+            } catch (e: unknown) {
+                console.error(e);
+                if (e instanceof Error) {
+                    setError(e.message);
+                } else {
+                    setError("Une erreur inconnue est survenue");
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadEvents();
+    }, []);
+    if (loading) {
+        return (
+            <View style={styles.screen}>
+                <Text>Chargement...</Text>
+            </View>
+        );
+    }
+    if (error) {
+        return (
+            <View style={styles.screen}>
+                <Text style={{color: "red"}}>
+                    {error}
+                </Text>
+            </View>
+        );
+    }
     return (
         <View style={styles.screen}>
             <Text style={styles.pageTitle}>{getMessage() + (user?.name ?? "")} </Text>
 
             <FlatList
                 data={events}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item: Event) => item.id}
                 renderItem={({item}) => (
-                    <EventCard
-                        id={item.id}
-                        title={item.title}
-                        beginDate={item.beginDate}
-                        endDate={item.endDate}
-                        location={item.location}
-                        eventTags={item.eventTags}
-                    />
+                    <EventCard event={item}/>
                 )}
                 contentContainerStyle={{gap: 12}}
             />
