@@ -17,7 +17,6 @@ export default class AuthRepositoryPocketBase implements IAuthRepository {
             return new User(r.name, r.surname, r.email, role);
 
         } catch (error: any) {
-            console.error(error);
             throw new Error("Email ou mot de passe invalide");
         }
     }
