@@ -1,6 +1,0 @@
-# Accès PocketBase
-[Serveur](https://pocketbase.tomstudio.eu/)
-
-Identifiants :
-derdeyn.thomas@gmail.com
-yum3wKDsW5dzCS
