@@ -1,7 +1,7 @@
 import User from "../../domain/core/User";
 import IUserRepository from "../../domain/repository/IUserRepository";
 import {pb} from "../pocketbaseClient";
-import {PocketBaseClientError} from "../PocketBaseError";
+import {PocketBaseClientError} from "../PocketTypes";
 
 const collectionName = "members";
 
