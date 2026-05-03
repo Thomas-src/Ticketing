@@ -6,8 +6,10 @@ export function toAddress(r: Address): Address {
     return new Address(
         r.name ?? "",
         r.address ?? "",
-        r.city ?? ""
-    );
+        r.city ?? "",
+        r.postalCode ?? ""
+    )
+        ;
 }
 
 
