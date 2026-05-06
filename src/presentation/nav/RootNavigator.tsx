@@ -1,6 +1,6 @@
 import {createNativeStackNavigator} from "@react-navigation/native-stack";
 import TabNavigator from "./TabNavigator";
-import Reservation from "../screen/Reservation";
+import EventDetails from "../screen/EventDetails";
 import {RootStackParamList} from "../../types/RootStackParamList";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -9,7 +9,7 @@ export default function RootNavigator() {
     return (
         <Stack.Navigator screenOptions={{headerShown: false}}>
             <Stack.Screen name="MainTabs" component={TabNavigator}/>
-            <Stack.Screen name="Reservation" component={Reservation}/>
+            <Stack.Screen name="Reservation" component={EventDetails}/>
         </Stack.Navigator>
     );
 }
