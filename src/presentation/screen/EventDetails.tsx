@@ -1,4 +1,4 @@
-import {StyleSheet,Text, View} from 'react-native';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {useEffect, useState} from "react";
 
 import ContextDetailsCard from "../components/eventDetails/ContextDetailsCard";
@@ -6,6 +6,8 @@ import ContextWhenCard from "../components/eventDetails/ContextWhenCard";
 import ContextWhereCard from "../components/eventDetails/ContextWhereCard";
 
 import {styles} from '../styles';
+import {colors} from "../colors";
+import { Share2 } from 'lucide-react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types/RootStackParamList';
 
@@ -64,8 +66,19 @@ export default function EventDetails({route}: Props) {
                 endDate={actualEvent?.endDate}
             />
             <ContextWhereCard
-
+                adress={actualEvent?.adress}
             />
+
+            <View style={actual.rowEnd}>
+                <Pressable style={actual.shareButton}>
+                    <Share2 color={colors.white}></Share2>
+                </Pressable>
+                <Pressable style={actual.buttonReservation}>
+                    <Text style={actual.w}>
+                        Réserver
+                    </Text>
+                </Pressable>
+            </View>
         </View>
     );
 }
@@ -75,5 +88,25 @@ const actual = StyleSheet.create({
         display: "flex",
         flexDirection: "column",
         gap: 25
+    },
+    w: {
+        color: colors.white,
+    },
+    rowEnd: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "flex-end",
+        gap: 15,
+        alignItems:"center"
+    },
+    buttonReservation: {
+        padding: 12,
+        backgroundColor: colors.blue,
+        borderRadius: 10,
+    },
+    shareButton: {
+        padding: 8,
+        borderRadius: 10,
+        backgroundColor: colors.lightBlue,
     }
 })
