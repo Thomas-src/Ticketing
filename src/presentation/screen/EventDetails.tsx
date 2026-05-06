@@ -55,18 +55,18 @@ export default function EventDetails({route}: Props) {
         <View style={[styles.container, actual.container]}>
 
             <ContextDetailsCard
-                name={actualEvent?.name}
+                name={actualEvent?.title}
                 description={actualEvent?.description}
-                tags={actualEvent?.tags.map(t => Tag[t])}
-                seatsLeft={actualEvent?.seatsLeft}
-                image={actualEvent?.imageUrl}
+                tags={actualEvent?.tags.map(t => t.name)}
+                seatsLeft={actualEvent?.size}
+                image={actualEvent?.image}
             />
             <ContextWhenCard
-                beginDate={actualEvent?.beginDate}
-                endDate={actualEvent?.endDate}
+                beginDate={actualEvent?.startAt}
+                endDate={actualEvent?.endAt}
             />
             <ContextWhereCard
-                adress={actualEvent?.adress}
+                adress={actualEvent?.address}
             />
 
             <View style={actual.rowEnd}>
