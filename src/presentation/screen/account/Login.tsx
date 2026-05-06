@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {Alert, KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {styles} from '../../styles';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../types/RootStackParamList';
@@ -16,7 +16,6 @@ const loginUser = new LoginUser(repo);
 export default function Login({navigation}: Props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
     const [errors, setErrors] = useState<any>({});
 
     const emailRef = useRef<TextInput>(null);
@@ -51,7 +50,8 @@ export default function Login({navigation}: Props) {
             navigation.getParent()?.navigate('Accueil');
 
         } catch (error) {
-            Alert.alert("Erreur", "Email ou mot de passe incorrect");
+            const message = error instanceof Error ? error.message : "Une erreur est survenue";
+            setErrors((prev: any) => ({...prev, other: message,}));
             console.error(error);
         }
     };
@@ -105,6 +105,10 @@ export default function Login({navigation}: Props) {
                         />
                         {errors.password && (
                             <Text style={styles.colorRed}>{errors.password}</Text>
+                        )}
+
+                        {errors.other && (
+                            <Text style={styles.colorRed}>{errors.other}</Text>
                         )}
 
                         <TouchableOpacity style={styles.button} onPress={handleSubmit}>

@@ -1,29 +1,68 @@
 import {Tag} from "./Tag";
-import {Address} from "./address";
+import {Address} from "./Address";
 
 export class Event {
-    id: number;
-    name: string;
-    description: string;
-    tags: Tag[];
-    seatsLeft: number;
-    imageUrl: string;
+    readonly #title: string;
+    readonly #id: string;
+    readonly #description: string;
+    readonly #size: number;
+    readonly #startAt: Date;
+    readonly #endAt: Date;
+    readonly #image: string;
+    readonly #tags: Tag[];
+    readonly #owner: string;
+    readonly #address: Address;
 
-    beginDate: Date;
-    endDate: Date;
-
-    adress: Address;
-
-    constructor(id: number, name: string, description: string, tags: Tag[], seatsLeft: number, imageUrl: string, beginDate: Date, endDate: Date, adress: Address ) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.tags = tags;
-        this.seatsLeft = seatsLeft;
-        this.imageUrl = imageUrl;
-        this.beginDate = beginDate;
-        this.endDate = endDate;
-        this.adress = adress;
+    constructor(id: string, title: string, description: string, size: number, startAt: Date, endAt: Date, image: string, tags: Tag[] = [], owner: string, address: Address) {
+        this.#id = id;
+        this.#title = title;
+        this.#description = description;
+        this.#size = size;
+        this.#startAt = startAt;
+        this.#endAt = endAt;
+        this.#image = image;
+        this.#tags = tags;
+        this.#owner = owner;
+        this.#address = address;
     }
 
+    get id(): string {
+        return this.#id;
+    }
+
+    get title(): string {
+        return this.#title;
+    }
+
+    get description(): string {
+        return this.#description;
+    }
+
+    get size(): number {
+        return this.#size;
+    }
+
+    get startAt(): Date {
+        return this.#startAt;
+    }
+
+    get endAt(): Date {
+        return this.#endAt;
+    }
+
+    get image(): string {
+        return this.#image;
+    }
+
+    get tags(): Tag[] {
+        return this.#tags;
+    }
+
+    get owner(): string {
+        return this.#owner;
+    }
+
+    get address(): Address {
+        return this.#address;
+    }
 }

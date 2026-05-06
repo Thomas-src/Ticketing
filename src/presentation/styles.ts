@@ -125,8 +125,8 @@ export const styles = StyleSheet.create({
     },
 
     image: {
-        maxWidth: "100%",
-        maxHeight: "100%",
+        width: "100%",
+        height: 150,
     },
     ecContentContainer: {
         display: "flex",

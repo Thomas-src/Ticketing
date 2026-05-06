@@ -1,6 +1,7 @@
 import User from "../../domain/core/User";
 import IUserRepository from "../../domain/repository/IUserRepository";
 import {pb} from "../pocketbaseClient";
+import {PocketBaseClientError} from "../PocketTypes";
 
 const collectionName = "members";
 
@@ -18,10 +19,15 @@ export default class UserRepositoryPocketBase implements IUserRepository {
             });
 
             await pb.collection(collectionName).authWithPassword(user.email, password);
+            console.log("Saved user :" + user.email);
         } catch (error: any) {
-            console.error(error);
-            console.error("Error pocketbase:", error?.response || error);
-            throw new Error("Impossible de créer l'utilisateur");
+            const pbError = error as PocketBaseClientError;
+            if (pbError.response?.status === 400) {
+                throw new Error("L'adresse email est déjà utilisée");
+            } else {
+                throw new Error("Impossible de créer l'utilisateur");
+            }
+
         }
     }
 }

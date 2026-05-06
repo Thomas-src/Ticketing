@@ -13,12 +13,6 @@ export default class User {
         this.#role = role;
     }
 
-    /*
-     fullName(): string {
-         return `${this.#name} ${this.#surname}`;
-     }
-     */
-
     get email(): string {
         return this.#email;
     }
