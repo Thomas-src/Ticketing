@@ -13,7 +13,7 @@ type Props = {
 export default function ContextDetailsCard(props: Props) {
     return <View style={CardStyle.container}>
         <View style={CardStyle.imageContainer}>
-            <Image source={require("../../../../assets/Images/concert.png")} style={CardStyle.image}></Image>
+            <Image source={{uri: props.image}} style={CardStyle.image}></Image>
         </View>
 
         <View style={CardStyle.contentContainer}>

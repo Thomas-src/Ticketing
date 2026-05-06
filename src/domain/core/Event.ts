@@ -1,5 +1,5 @@
 import {Tag} from "./Tag";
-import {Address} from "./Address";
+import {Address} from "./address";
 
 export class Event {
     readonly #title: string;

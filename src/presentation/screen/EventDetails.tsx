@@ -7,7 +7,7 @@ import ContextWhereCard from "../components/eventDetails/ContextWhereCard";
 
 import {styles} from '../styles';
 import {colors} from "../colors";
-import { Share2 } from 'lucide-react-native';
+import {Share2} from 'lucide-react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types/RootStackParamList';
 
@@ -57,7 +57,7 @@ export default function EventDetails({route}: Props) {
             <ContextDetailsCard
                 name={actualEvent?.title}
                 description={actualEvent?.description}
-                tags={actualEvent?.tags.map(t => t.name)}
+                tags={actualEvent?.tags?.map(t => t.name) ?? []}
                 seatsLeft={actualEvent?.size}
                 image={actualEvent?.image}
             />
@@ -97,7 +97,7 @@ const actual = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "flex-end",
         gap: 15,
-        alignItems:"center"
+        alignItems: "center"
     },
     buttonReservation: {
         padding: 12,

@@ -3,7 +3,7 @@ import {colors} from "../../colors";
 import {styles} from "../../styles";
 import {MapPin} from 'lucide-react-native';
 import {SquareArrowOutUpRight} from 'lucide-react-native';
-import {Address} from "../../../domain/core/address";
+import {Address} from "../../../domain/core/Address";
 import {Platform, Linking} from "react-native";
 
 type Props = {
