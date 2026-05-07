@@ -47,7 +47,7 @@ export default function EventCard({event}: Props) {
 
                 <View style={styles.ecContainerBut}>
                     <View style={styles.ecButtonContainer}>
-                        <Pressable style={styles.button} onPress={() => navigation.navigate("Reservation", {
+                        <Pressable style={styles.button} onPress={() => navigation.navigate("Details", {
                             eventId: id
                         })}>
                             <Text style={styles.buttonText}>Réserver</Text>

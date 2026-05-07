@@ -2,26 +2,35 @@ import {IEventRepository} from "../../domain/repository/IEventRepository";
 import {Event} from "../../domain/core/Event";
 import {Tag} from "../../domain/core/Tag";
 import {Address} from "../../domain/core/Address";
+import {pb} from "../pocketbaseClient";
+import {toAddress, toTags} from "./Mapper";
 
+const collectionName = "events";
 export default class EventRepositoryPocketBase implements IEventRepository {
 
-    async getEventDetails(id: number): Promise<Event> {
-        const tags = [new Tag("Concert", "concert"), new Tag("Musique", "musique")];
+    async findEventById(id: string): Promise<Event | null> {
+        try {
+            const record = await pb.collection(collectionName).getOne(id, {
+                expand: "tags,members,locations",
+            });
 
-        const result = new Event(
-            "qsd",
-            "Concert Franz Ferdinant",
-            "Ceci est une description",
-            956,
-            new Date(2026, 3, 1, 20, 0),
-            new Date(2026, 3, 2, 0, 0),
-            "../../assets/Images/concert.png",
-            tags,
-            "Owner",
-            new Address("ING Arena", "Avenue des Miramar", "Bruxelles", 1020)
-        )
+            return new Event(
+                record.id,
+                record.title,
+                record.description,
+                record.size,
+                new Date(record.startAt),
+                new Date(record.endAt),
+                pb.files.getURL(record, record.image),
+                toTags(record.expand?.tags ?? []),
+                record.ownerId,
+                toAddress(record.expand?.locations)
+            );
 
-        return result;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
     }
 
 }

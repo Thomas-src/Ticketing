@@ -54,8 +54,9 @@ const CardStyle = StyleSheet.create({
 
     },
     image: {
-        maxWidth: '100%',
-        maxHeight: '100%',
+        width: '100%',
+        height: '100%',
+        resizeMode: "cover",
     },
     contentContainer: {
         padding: 10,

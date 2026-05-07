@@ -15,9 +15,8 @@ const openMaps = (props: Props) => {
         return;
     }
 
-    const {street, postalCode, city} = props.adress;
+    const address = props.adress.address;
 
-    const address = `${street}, ${postalCode} ${city}`;
     let url = "";
     if (Platform.OS === 'ios') {
         url = `http://maps.apple.com/?daddr=${encodeURIComponent(address)}`;
@@ -29,6 +28,8 @@ const openMaps = (props: Props) => {
 }
 
 export default function ContextWhereCard(props: Props) {
+        const splittedAddress = props.adress?.address.split(',');
+        const formattedAddress = splittedAddress?.at(0) + ',\n' + splittedAddress?.at(1);
 
     if (!props.adress) {
         return null;
@@ -49,9 +50,7 @@ export default function ContextWhereCard(props: Props) {
                     <View style={cardStyles.row}>
                         <Text style={[cardStyles.w, cardStyles.strong]}>Adresse : </Text>
                         <Text style={[cardStyles.w]}>
-                            {props.adress
-                                ? `${props.adress.street}\n${props.adress.postalCode} ${props.adress.city}`
-                                : ""}
+                            {formattedAddress}
                         </Text>
                     </View>
                     <View>

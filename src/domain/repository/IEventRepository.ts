@@ -1,5 +1,6 @@
 import {Event} from "../core/Event";
+import User from "../core/User";
 
 export interface IEventRepository {
-    getEventDetails(id: number): Promise<Event>;
+    findEventById(id: string): Promise<Event | null>;
 }

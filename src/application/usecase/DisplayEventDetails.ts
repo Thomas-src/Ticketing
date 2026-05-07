@@ -6,7 +6,7 @@ export default class DisplayEventDetails {
 
     }
 
-    async execute(id: number) {
-        return this.repository.getEventDetails(id);
+    async execute(id: string) {
+        return this.repository.findEventById(id);
     }
 }
