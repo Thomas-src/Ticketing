@@ -1,7 +1,7 @@
 import {IEventRepository} from "../../domain/repository/IEventRepository";
 import {Event} from "../../domain/core/Event";
 import {Tag} from "../../domain/core/Tag";
-import {Address} from "../../domain/core/address";
+import {Address} from "../../domain/core/Address";
 
 export default class EventRepositoryPocketBase implements IEventRepository {
 
