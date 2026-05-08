@@ -116,9 +116,7 @@ export default function EventDetails({route}: Props) {
                 <Pressable style={actual.shareButton} onPress={shareEvent}>
                     <Share2 color={colors.white}></Share2>
                 </Pressable>
-                <Pressable style={actual.buttonReservation} onPress={() => navigation.navigate("Reservation", {
-                    event : actualEvent
-                })}>
+                <Pressable style={actual.buttonReservation}>
                     <Text style={actual.w}>
                         Réserver
                     </Text>
