@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, Text, View, Share, Modal} from 'react-native';
+import {Modal, Pressable, Share, StyleSheet, Text, View} from 'react-native';
 import {useEffect, useState} from "react";
 
 import ContextDetailsCard from "../components/eventDetails/ContextDetailsCard";
@@ -14,16 +14,14 @@ import {Share2} from 'lucide-react-native';
 import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types/RootStackParamList';
 
-import EventRepositoryPocketBase from "../../infrastructure/repository/EventRepositoryPocketBase";
+import EventsRepositoryPocketBase from "../../infrastructure/repository/EventsRepositoryPocketBase";
 import DisplayEventDetails from "../../application/usecase/DisplayEventDetails";
 import {Event} from "../../domain/core/Event";
-import {Tag} from "../../domain/core/Tag";
 import {useNavigation} from "@react-navigation/native";
-import {setName} from "@expo/config-plugins/build/ios/Name";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Details">;
 
-const repo = new EventRepositoryPocketBase();
+const repo = new EventsRepositoryPocketBase();
 const displayUC = new DisplayEventDetails(repo);
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -142,9 +140,9 @@ export default function EventDetails({route}: Props) {
                 <View style={actual.modalContainer}>
                     <View>
 
-                        <View >
+                        <View>
                             {[1, 2, 3].map(i => (
-                                <View key={i} />
+                                <View key={i}/>
                             ))}
                         </View>
 

@@ -21,6 +21,7 @@ export default function EventCard({event}: Props) {
             hour12: false,
         });
     };
+    console.log(address);
 
     return (
         <View style={styles.eventCard}>

@@ -45,6 +45,7 @@ export default class EventsRepositoryPocketBase implements IEventsRepository {
                     pb.files.getURL(r, r.image),
                     toTags(r.expand?.tags ?? []),
                     r.ownerId,
+                    r.price,
                     toAddress(r.expand?.locations)
                 );
             });
@@ -53,6 +54,33 @@ export default class EventsRepositoryPocketBase implements IEventsRepository {
             throw new Error("Impossible de récupérer les événements");
         }
     }
+
+    async findEventById(id: string): Promise<Event | null> {
+        try {
+            const record = await pb.collection(collectionName).getOne(id, {
+                expand: "tags,members,locations",
+            });
+
+            return new Event(
+                record.id,
+                record.title,
+                record.description,
+                record.size,
+                new Date(record.startAt),
+                new Date(record.endAt),
+                pb.files.getURL(record, record.image),
+                toTags(record.expand?.tags ?? []),
+                record.ownerId,
+                record.price,
+                toAddress(record.expand?.locations)
+            );
+
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    }
+
 
     saveEvent(user: User, event: Event): Promise<boolean> {
         throw new Error("Method not implemented.");
