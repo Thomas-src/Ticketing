@@ -1,4 +1,3 @@
-import User from "../../domain/core/User";
 import IEventsRepository from "../../domain/repository/IEventsRepository";
 import {pb} from "../pocketbaseClient";
 import {Event} from "../../domain/core/Event";
@@ -84,8 +83,65 @@ export default class EventsRepositoryPocketBase extends IEventsRepository {
     }
 
 
-    saveEvent(user: User, event: Event): Promise<boolean> {
-        throw new Error("Method not implemented.");
+    async saveEvent(event: Event): Promise<boolean> {
+        try {
+            const authUserId = pb.authStore.record?.id;
+            if (!authUserId) {
+                throw new Error("Utilisateur non connecté");
+            }
+
+            const tagIds = await Promise.all(
+                event.tags.map(async (tag) => {
+                    try {
+                        const existing = await pb.collection("tags")
+                            .getFirstListItem(`slug = "${tag.slug}"`);
+                        return existing.id;
+                    } catch {
+                        const created = await pb.collection("tags")
+                            .create({name: tag.name, slug: tag.slug});
+                        return created.id;
+                    }
+                })
+            );
+
+            let locationId: string;
+            try {
+                const existing = await pb.collection("locations").getFirstListItem(`name = "${event.address.name}"`);
+                locationId = existing.id;
+            } catch {
+                const created = await pb.collection("locations").create({
+                    name: event.address.name,
+                    address: event.address.address,
+                    city: event.address.city,
+                    street: event.address.street,
+                    postalCode: event.address.postalCode,
+                });
+                locationId = created.id;
+            }
+
+            const data = {
+                title: event.title,
+                description: event.description,
+                size: event.size,
+                startAt: event.startAt.toISOString(),
+                endAt: event.endAt.toISOString(),
+                tags: tagIds,
+                locations: locationId,
+                price: event.price,
+                ownerId: authUserId,
+            };
+
+            if (event.id) {
+                await pb.collection(collectionName).update(event.id, data);
+            } else {
+                await pb.collection(collectionName).create(data);
+            }
+
+            return true;
+        } catch (error) {
+            console.error(error);
+            return false;
+        }
     }
 }
 

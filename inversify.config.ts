@@ -9,6 +9,8 @@ import DisplayEventDetails from "./src/application/usecase/DisplayEventDetails";
 import IEventsRepository from "./src/domain/repository/IEventsRepository";
 import EventsRepositoryPocketBase from "./src/infrastructure/repository/EventsRepositoryPocketBase";
 import GetAvaiblesEvents from "./src/application/usecase/GetAvaiblesEvents";
+import CreateNewEvent from "./src/application/usecase/CreateNewEvent";
+
 
 const container = new Container({defaultScope: "Singleton"});
 // repository
@@ -22,6 +24,7 @@ container.bind(CreateUser).toSelf();
 container.bind(LoginUser).toSelf();
 container.bind(DisplayEventDetails).toSelf();
 container.bind(GetAvaiblesEvents).toSelf();
+container.bind(CreateNewEvent).toSelf();
 
 
 export {container};
