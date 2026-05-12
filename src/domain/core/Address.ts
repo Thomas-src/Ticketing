@@ -2,11 +2,13 @@ export class Address {
     #name: string;
     #address: string;
     #city: string;
+    #street: string;
     #postalCode: number;
 
-    constructor(name: string, address: string, city: string, postalCode: number) {
+    constructor(name: string, address: string, city: string, street: string, postalCode: number) {
         this.#name = name;
         this.#address = address;
+        this.#street = street;
         this.#city = city;
         this.#postalCode = postalCode
     }
@@ -21,6 +23,10 @@ export class Address {
 
     get city(): string {
         return this.#city;
+    }
+
+    get street(): string {
+        return this.#street;
     }
 
     get postalCode(): number {
