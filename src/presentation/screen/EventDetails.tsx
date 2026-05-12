@@ -1,9 +1,12 @@
-import {Pressable, StyleSheet, Text, View, Share} from 'react-native';
+import {Pressable, StyleSheet, Text, View, Share, Modal} from 'react-native';
 import {useEffect, useState} from "react";
 
 import ContextDetailsCard from "../components/eventDetails/ContextDetailsCard";
 import ContextWhenCard from "../components/eventDetails/ContextWhenCard";
 import ContextWhereCard from "../components/eventDetails/ContextWhereCard";
+import ReservationStep1 from "../components/reservation/ReservationStep1";
+import ReservationStep2 from "../components/reservation/ReservationStep2";
+import ReservationStep3 from "../components/reservation/ReservationStep3";
 
 import {styles} from '../styles';
 import {colors} from "../colors";
@@ -16,6 +19,7 @@ import DisplayEventDetails from "../../application/usecase/DisplayEventDetails";
 import {Event} from "../../domain/core/Event";
 import {Tag} from "../../domain/core/Tag";
 import {useNavigation} from "@react-navigation/native";
+import {setName} from "@expo/config-plugins/build/ios/Name";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Details">;
 
@@ -31,6 +35,17 @@ export default function EventDetails({route}: Props) {
 
     const [actualEvent, setActualEvent] = useState<Event | null>(null);
     const [loading, setLoading] = useState(true);
+    const [modalVisible, setModalVisible] = useState(false); // Sert pour tout affiche l'écran de réservation par dessus l'écran de base
+    const [step, setStep] = useState(1);
+    const [count, setCount] = useState(1);
+    const [names, setNames] = useState<string[]>([]);
+
+    const resetModal = () => {
+        setModalVisible(false);
+        setStep(1);
+        setNames([]);
+        setCount(0);
+    };
 
     useEffect(() => {
         const fetchEvent = async () => {
@@ -117,11 +132,53 @@ export default function EventDetails({route}: Props) {
                     <Share2 color={colors.white}></Share2>
                 </Pressable>
                 <Pressable style={actual.buttonReservation}>
-                    <Text style={actual.w}>
+                    <Text style={actual.w} onPress={() => setModalVisible(true)}>
                         Réserver
                     </Text>
                 </Pressable>
             </View>
+
+            <Modal visible={modalVisible} transparent animationType="slide" onRequestClose={resetModal}>
+                <View style={actual.modalContainer}>
+                    <View>
+
+                        <View >
+                            {[1, 2, 3].map(i => (
+                                <View key={i} />
+                            ))}
+                        </View>
+
+                        {step === 1 && (
+                            <ReservationStep1
+                                count={count}
+                                onChange={setCount}
+                                onBack={resetModal}
+                                onNext={() => {
+                                    setNames(Array(count).fill(''));
+                                    setStep(2);
+                                }}
+                            />
+                        )}
+                        {step === 2 && (
+                            <ReservationStep2
+                                names={names}
+                                onChange={setNames}
+                                onBack={() => setStep(1)}
+                                onNext={() => setStep(3)}
+                            />
+                        )}
+                        {step === 3 && (
+                            <ReservationStep3
+                                event={actualEvent}
+                                count={count}
+                                names={names}
+                                onClose={resetModal}
+                            />
+                        )}
+
+                    </View>
+                </View>
+            </Modal>
         </View>
     );
 }
@@ -151,5 +208,17 @@ const actual = StyleSheet.create({
         padding: 8,
         borderRadius: 10,
         backgroundColor: colors.lightBlue,
+    },
+    modalContainer: {
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: 12,
+        borderRadius: 12,
+        marginHorizontal: "auto",
+        marginTop: "40%",
+        backgroundColor: colors.white,
+        width: "90%",
+        height: "30%",
     }
 })

@@ -7,6 +7,7 @@ export function toAddress(r: Address): Address {
         r.name ?? "",
         r.address ?? "",
         r.city ?? "",
+        r.street ?? "",
         r.postalCode ?? ""
     )
         ;
