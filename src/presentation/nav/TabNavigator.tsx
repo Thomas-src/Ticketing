@@ -11,6 +11,7 @@ import Tickets from '../screen/Tickets';
 
 import {styles} from "../styles";
 import {colors} from "../colors";
+import EventDetails from "../screen/EventDetails";
 
 function withLayout(Component: React.ComponentType<any>) {
     return function WrappedScreen(props: any) {
@@ -101,6 +102,14 @@ export default function TabNavigator() {
                         </Text>
                     ),
                     tabBarIcon: ({color}) => <UserIcon color={color} size={22}/>,
+                }}
+            />
+            <Tab.Screen
+                name="Details"
+                component={withLayout(EventDetails)}
+                options={{
+                    tabBarButton: () => null,
+                    tabBarItemStyle: {display: 'none'},  // ← supprime l'espace réservé
                 }}
             />
         </Tab.Navigator>
