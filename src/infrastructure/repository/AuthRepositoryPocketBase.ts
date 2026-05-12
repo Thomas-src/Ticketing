@@ -2,9 +2,11 @@ import {pb} from "../pocketbaseClient";
 import IAuthRepository from "../../domain/repository/IAuthRepository";
 import User from "../../domain/core/User";
 import {Role} from "../../domain/core/Role";
+import {injectable} from "inversify";
 
 const collectionName = "members";
-export default class AuthRepositoryPocketBase implements IAuthRepository {
+@injectable()
+export default class AuthRepositoryPocketBase extends IAuthRepository {
     async login(email: string, password: string): Promise<User> {
         try {
             const authData = await pb

@@ -1,12 +1,15 @@
-import {IEventRepository} from "../../domain/repository/IEventRepository";
+import IEventsRepository from "../../domain/repository/IEventsRepository";
+import {inject} from "inversify";
 
 
 export default class DisplayEventDetails {
-    constructor(private repository: IEventRepository) {
-
+    constructor(
+        @inject(IEventsRepository)
+        private repo: IEventsRepository
+    ) {
     }
 
     async execute(id: string) {
-        return this.repository.findEventById(id);
+        return this.repo.findEventById(id);
     }
 }

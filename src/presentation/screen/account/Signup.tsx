@@ -5,15 +5,14 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../types/RootStackParamList';
 import {CircleUserIcon} from "lucide-react-native";
 import {colors} from "../../colors";
-import UserRepositoryPocketBase from "../../../infrastructure/repository/UserRepositoryPocketBase";
+import {useInjection} from "../../hooks/ioc.react";
 import CreateUser from "../../../application/usecase/CreateUser";
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
-const repo = new UserRepositoryPocketBase();
-const createUser = new CreateUser(repo);
-
 export default function Signup({navigation}: Props) {
+    const createUser = useInjection<CreateUser>(CreateUser);
+
     const [prenom, setPrenom] = useState('');
     const [nom, setNom] = useState('');
     const [email, setEmail] = useState('');

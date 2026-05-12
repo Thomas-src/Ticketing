@@ -14,20 +14,17 @@ import {Share2} from 'lucide-react-native';
 import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types/RootStackParamList';
 
-import EventsRepositoryPocketBase from "../../infrastructure/repository/EventsRepositoryPocketBase";
 import DisplayEventDetails from "../../application/usecase/DisplayEventDetails";
 import {Event} from "../../domain/core/Event";
 import {useNavigation} from "@react-navigation/native";
+import {useInjection} from "../hooks/ioc.react";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Details">;
-
-const repo = new EventsRepositoryPocketBase();
-const displayUC = new DisplayEventDetails(repo);
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function EventDetails({route}: Props) {
     const navigation = useNavigation<NavigationProp>();
-
+    const displayEvent = useInjection<DisplayEventDetails>(DisplayEventDetails);
 
     const {eventId} = route.params;
 
@@ -48,7 +45,7 @@ export default function EventDetails({route}: Props) {
     useEffect(() => {
         const fetchEvent = async () => {
             try {
-                const event = await displayUC.execute(eventId);
+                const event = await displayEvent.execute(eventId);
                 console.log("Affichage des détails de : " + event?.title)
                 if (!event) {
                     navigation.goBack()

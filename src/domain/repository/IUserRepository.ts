@@ -1,5 +1,5 @@
 import User from "../core/User";
 
-export default interface IUserRepository {
-    saveUser(user: User, password: string): Promise<void>;
+export default abstract class IUserRepository {
+    abstract saveUser(user: User, password: string): Promise<void>;
 }

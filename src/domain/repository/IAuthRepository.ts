@@ -1,11 +1,11 @@
 import User from "../core/User";
 
-export default interface IAuthRepository {
-    login(email: string, password: string): Promise<User>;
+export default abstract class IAuthRepository {
+    abstract login(email: string, password: string): Promise<User>;
 
-    logout(): Promise<void>;
+    abstract logout(): Promise<void>;
 
-    getCurrentUser(): User | null;
+    abstract getCurrentUser(): User | null;
 
-    isAuthenticated(): boolean;
+    abstract isAuthenticated(): boolean;
 }

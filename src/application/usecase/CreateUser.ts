@@ -1,8 +1,14 @@
-import IUserRepository from "../../domain/repository/IUserRepository";
 import User from "../../domain/core/User";
+import {inject, injectable} from "inversify";
+import IUserRepository from "../../domain/repository/IUserRepository";
 
+
+@injectable()
 export default class CreateUser {
-    constructor(private repo: IUserRepository) {
+    constructor(
+        @inject(IUserRepository)
+        private repo: IUserRepository
+    ) {
     }
 
     async execute(name: string, surname: string, email: string, password: string): Promise<User> {

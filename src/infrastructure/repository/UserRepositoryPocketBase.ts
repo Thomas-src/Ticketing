@@ -2,10 +2,11 @@ import User from "../../domain/core/User";
 import IUserRepository from "../../domain/repository/IUserRepository";
 import {pb} from "../pocketbaseClient";
 import {PocketBaseClientError} from "../PocketTypes";
+import {injectable} from "inversify";
 
 const collectionName = "members";
-
-export default class UserRepositoryPocketBase implements IUserRepository {
+@injectable()
+export default class UserRepositoryPocketBase extends IUserRepository {
 
     async saveUser(user: User, password: string): Promise<void> {
         try {
