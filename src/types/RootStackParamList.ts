@@ -1,10 +1,15 @@
-import {Event} from "../domain/core/Event"
-
 export type RootStackParamList = {
     MainTabs: undefined;
-    Details: { eventId: string };
+
     Settings: undefined;
     Signup: undefined;
     Login: undefined;
     Home: undefined;
+    Details: { eventId: string };
+    // settings
+    CreateEvent: undefined;
+    ManageEvent: undefined;
+    ManageTeam: undefined;
+    VerifyTicket: undefined;
+
 };

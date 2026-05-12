@@ -18,7 +18,7 @@ const navigations: SettingType[] = [
 const UserNavigations: SettingType[] = [
     {
         title: "Créer un évènement",
-        redirection: "Signup",
+        redirection: "CreateEvent",
         color: colors.blue
     },
     {
@@ -31,7 +31,7 @@ const UserNavigations: SettingType[] = [
 const StaffNavigations: SettingType[] = [
     {
         title: "Créer un évènement",
-        redirection: "Signup",
+        redirection: "CreateEvent",
         color: colors.blue
     },
     {
@@ -54,18 +54,18 @@ const AdminNavigations: SettingType[] = [
     },
     {
         title: "Gérer vos évènements",
-        redirection: "Signup",
+        redirection: "ManageEvent",
         color: colors.blue
     },
 
     {
         title: "Gérer votre équipe",
-        redirection: "Signup",
+        redirection: "ManageTeam",
         color: colors.blue
     },
     {
         title: "Vérifier des tickets",
-        redirection: "Signup",
+        redirection: "VerifyTicket",
         color: colors.blue
     },
     {

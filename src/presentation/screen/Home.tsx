@@ -4,7 +4,7 @@ import EventCard from "../components/EventCard";
 import {useAuth} from "../context/AuthContext";
 import GetAvaiblesEvents from "../../application/usecase/GetAvaiblesEvents";
 import {Event} from "../../domain/core/Event";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useInjection} from "../hooks/ioc.react";
 
 const getMessage = (): string => {
@@ -18,30 +18,29 @@ export default function Home() {
     const avaiblesEvents = useInjection<GetAvaiblesEvents>(GetAvaiblesEvents);
 
     const {user} = useAuth();
-    const date = new Date();
+    const date = useRef(new Date()).current;
     const [events, setEvents] = useState<Event[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
+    const loadEvents = async (isRefresh = false) => {
+        try {
+            if (isRefresh) setRefreshing(true);
+            else setLoading(true);
+            setError(null);
+            const result = await avaiblesEvents.execute(date);
+            setEvents(result);
+        } catch (e: unknown) {
+            console.error(e);
+            if (e instanceof Error) setError(e.message);
+            else setError("Une erreur inconnue est survenue");
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
+        }
+    };
+
     useEffect(() => {
-        const loadEvents = async () => {
-            try {
-                setLoading(true);
-                setError(null);
-                const result = await avaiblesEvents.execute(date);
-                setEvents(result);
-
-            } catch (e: unknown) {
-                console.error(e);
-                if (e instanceof Error) {
-                    setError(e.message);
-                } else {
-                    setError("Une erreur inconnue est survenue");
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
-
         loadEvents();
     }, []);
     if (loading) {
@@ -71,6 +70,8 @@ export default function Home() {
                     <EventCard event={item}/>
                 )}
                 contentContainerStyle={{gap: 12}}
+                refreshing={loading}
+                onRefresh={() => loadEvents(true)}
             />
         </View>
     );

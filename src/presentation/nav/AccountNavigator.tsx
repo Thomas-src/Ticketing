@@ -5,6 +5,10 @@ import Signup from "../screen/account/Signup";
 import Login from "../screen/account/Login";
 import Layout from "../components/_layout";
 import {RootStackParamList} from "../../types/RootStackParamList";
+import CreateEvent from "../screen/settings/CreateEvent";
+import ManageEvent from "../screen/settings/ManageEvent";
+import VerifyTicket from "../screen/settings/VerifyTicket";
+import ManageTeam from "../screen/settings/ManageTeam";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -24,6 +28,11 @@ export default function AccountNavigator() {
             <Stack.Screen name="Settings" component={withLayout(Settings)}/>
             <Stack.Screen name="Signup" component={withLayout(Signup)}/>
             <Stack.Screen name="Login" component={withLayout(Login)}/>
+            <Stack.Screen name="CreateEvent" component={withLayout(CreateEvent)}/>
+            <Stack.Screen name="ManageEvent" component={withLayout(ManageEvent)}/>
+            <Stack.Screen name="ManageTeam" component={withLayout(ManageTeam)}/>
+
+            <Stack.Screen name="VerifyTicket" component={withLayout(VerifyTicket)}/>
         </Stack.Navigator>
     );
 }
