@@ -2,7 +2,6 @@ import {Event} from "../../../domain/core/Event"
 import {FlatList, Pressable, StyleSheet, Text, TextInput, View} from "react-native";
 import {colors} from "../../colors";
 import {useState} from "react";
-import {inspect} from "node:util";
 
 type Props = {
     event: Event;
