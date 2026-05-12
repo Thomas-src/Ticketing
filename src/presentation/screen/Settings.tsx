@@ -8,8 +8,9 @@ import {getUserNavParameters} from "../nav/SettingsRouteList"
 import {SettingType} from "../../types/ScreenType";
 import AuthRepositoryPocketBase from "../../infrastructure/repository/AuthRepositoryPocketBase";
 
-const authRepository = new AuthRepositoryPocketBase();
+const authRepository = new AuthRepositoryPocketBase(); // todo injecter
 type Props = { navigation: NativeStackNavigationProp<RootStackParamList>; };
+
 export default function Settings({navigation}: Props) {
     const {user} = useAuth();
     const handlePress = async (setting: SettingType) => {
@@ -19,7 +20,6 @@ export default function Settings({navigation}: Props) {
         } else {
             navigation.navigate(setting.redirection as any); // todo fix any
         }
-
     };
 
     return (

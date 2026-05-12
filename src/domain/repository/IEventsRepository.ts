@@ -1,8 +1,10 @@
 import User from "../core/User";
 import {Event} from "../core/Event";
 
-export default interface IEventsRepository {
-    findAvailableEvents(date: Date): Promise<Event[]>;
+export default abstract class IEventsRepository {
+    abstract findAvailableEvents(date: Date): Promise<Event[]>;
 
-    saveEvent(user: User, event: Event): Promise<boolean>;
+    abstract saveEvent(user: User, event: Event): Promise<boolean>;
+
+    abstract findEventById(id: string): Promise<Event | null>
 }

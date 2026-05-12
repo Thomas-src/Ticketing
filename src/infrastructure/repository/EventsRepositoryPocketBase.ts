@@ -3,9 +3,11 @@ import IEventsRepository from "../../domain/repository/IEventsRepository";
 import {pb} from "../pocketbaseClient";
 import {Event} from "../../domain/core/Event";
 import {toAddress, toTags} from "./Mapper";
+import {injectable} from "inversify";
 
 const collectionName = "events";
-export default class EventsRepositoryPocketBase implements IEventsRepository {
+@injectable()
+export default class EventsRepositoryPocketBase extends IEventsRepository {
     async findAvailableEvents(date: Date): Promise<Event[]> {
         try {
             const [records, reservations] = await Promise.all([

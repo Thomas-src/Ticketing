@@ -13,6 +13,8 @@ module.exports = function (api) {
                     },
                 },
             ],
+            ['@babel/plugin-proposal-decorators', {legacy: true}],
+            'babel-plugin-transform-typescript-metadata',
         ],
     };
 };

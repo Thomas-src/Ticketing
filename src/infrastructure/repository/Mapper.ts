@@ -2,15 +2,13 @@ import {Address} from "../../domain/core/Address";
 import {Tag} from "../../domain/core/Tag";
 
 export function toAddress(r: Address): Address {
-    console.log("Raw address", r);
     return new Address(
         r.name ?? "",
         r.address ?? "",
         r.city ?? "",
         r.street ?? "",
         r.postalCode ?? ""
-    )
-        ;
+    );
 }
 
 

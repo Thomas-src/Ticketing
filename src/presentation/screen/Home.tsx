@@ -2,13 +2,10 @@ import {FlatList, Text, View} from 'react-native';
 import {styles} from '../styles';
 import EventCard from "../components/EventCard";
 import {useAuth} from "../context/AuthContext";
-import EventsRepositoryPocketBase from "../../infrastructure/repository/EventsRepositoryPocketBase";
 import GetAvaiblesEvents from "../../application/usecase/GetAvaiblesEvents";
 import {Event} from "../../domain/core/Event";
 import {useEffect, useState} from "react";
-
-const repo = new EventsRepositoryPocketBase();
-const avaiblesEvents = new GetAvaiblesEvents(repo);
+import {useInjection} from "../hooks/ioc.react";
 
 const getMessage = (): string => {
     const hour = new Date().getHours();
@@ -18,6 +15,8 @@ const getMessage = (): string => {
 };
 
 export default function Home() {
+    const avaiblesEvents = useInjection<GetAvaiblesEvents>(GetAvaiblesEvents);
+
     const {user} = useAuth();
     const date = new Date();
     const [events, setEvents] = useState<Event[]>([]);
@@ -29,7 +28,6 @@ export default function Home() {
                 setLoading(true);
                 setError(null);
                 const result = await avaiblesEvents.execute(date);
-                console.log(result);
                 setEvents(result);
 
             } catch (e: unknown) {
