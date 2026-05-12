@@ -35,7 +35,7 @@ export default function EventDetails({route}: Props) {
     const [loading, setLoading] = useState(true);
     const [modalVisible, setModalVisible] = useState(false); // Sert pour tout affiche l'écran de réservation par dessus l'écran de base
     const [step, setStep] = useState(1);
-    const [count, setCount] = useState(1);
+    const [count, setCount] = useState(1); // Le nombre de participant incsrit
     const [names, setNames] = useState<string[]>([]);
 
     const resetModal = () => {
@@ -163,6 +163,7 @@ export default function EventDetails({route}: Props) {
                                 onChange={setNames}
                                 onBack={() => setStep(1)}
                                 onNext={() => setStep(3)}
+                                count={count.valueOf()}
                             />
                         )}
                         {step === 3 && (
@@ -170,6 +171,7 @@ export default function EventDetails({route}: Props) {
                                 event={actualEvent}
                                 count={count}
                                 names={names}
+                                onBack={() => setStep(2)}
                                 onClose={resetModal}
                             />
                         )}

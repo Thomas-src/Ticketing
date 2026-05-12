@@ -14,7 +14,8 @@ type Props = {
 
 
 export default function ReservationStep1(props: Props) {
-    const [count, setCount] = useState(0);
+    const [count, setCount] = useState(1);
+    const [inputText, setInputText] = useState("1");
     const price = 90; // Todo prendre le vrai prix
 
     const totalPrice = count * price;
@@ -35,9 +36,10 @@ export default function ReservationStep1(props: Props) {
                 <TextInput
                     style={style.input}
                     keyboardType="numeric"
-                    value={count.toString()}
+                    value={inputText}
                     onChangeText={(text) => {
-                        const value = parseInt(text) || 0;
+                        setInputText(text);
+                        const value = Math.max(1, parseInt(text) || 1);
                         setCount(value);
                         props.onChange(value);
                     }}
