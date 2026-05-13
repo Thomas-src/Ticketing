@@ -22,6 +22,22 @@ export default function ReservationStep2(props: Props) {
         props.onChange(updated);
     };
 
+    const allInputValid = () => {
+        if (names.length == 0) {
+            return false
+        }
+
+        // On commence a une car le premier sera toujours pour l'utilisateur courant qui commande
+        for (let i = 1; i < names.length; i++) {
+            if (names[i].trim() === "") {
+                return false;
+            }
+        }
+
+        console.log("Tout les champs sont rempli, passage à l'écran suivant")
+        return true;
+    };
+
     return (
         <View style={style.container}>
             <View style={style.stepsContainer}>
@@ -40,7 +56,7 @@ export default function ReservationStep2(props: Props) {
                     <View style={style.inputGroup}>
                         <Text style={style.label}>
                             {/*Todo renplacer par le nom prénom de l'utilisateur*/}
-                            {index === 0 ? "Votre place :" : `Dénomination place ${index + 1} :`}
+                            {index === 0 ? "Votre place :" : `Dénomination place ${index + 1}* :`}
                         </Text>
                         <TextInput
                             style={[style.input, index === 0 && style.inputDisabled]}
@@ -56,7 +72,7 @@ export default function ReservationStep2(props: Props) {
                 <Pressable style={style.backButton} onPress={() => props.onBack()}>
                     <Text style={style.ButtonText}>Retour</Text>
                 </Pressable>
-                <Pressable style={style.nextButton} onPress={() => props.onNext()}>
+                <Pressable style={[style.nextButton, !allInputValid() && style.pressableDisabled]} onPress={() => {props.onNext()}} disabled={!allInputValid()}>
                     <Text style={[style.ButtonText, style.w]}>Continuer</Text>
                 </Pressable>
             </View>
@@ -125,7 +141,11 @@ const style = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
     },
-    inputDisabled: {
+    inputDisabled:{
         opacity: 0.6,
+    },
+    pressableDisabled: {
+        opacity: 0.6,
+        backgroundColor : colors.lightBlue,
     },
 });

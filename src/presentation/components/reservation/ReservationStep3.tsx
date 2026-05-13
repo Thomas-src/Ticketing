@@ -7,12 +7,36 @@ type Props = {
     event: Event;
     count: number;
     names: string[];
-    onClose: () => void;
+    onSucces: () => void;
+    onFail: () => void;
     onBack: () => void;
 };
 
 export default function ReservationStep3(props: Props) {
-    const [iban, setIban] = useState("0");
+    const [iban, setIban] = useState("BE");
+    const [expirationMonth, setExpirationMonth] = useState("");
+    const [expirationYear, setExpirationYear] = useState("");
+    const [cvc, setCvc] = useState("");
+
+    const formCorrect = () => {
+        const ibanRegex = /^BE\d{14}$/;
+        const monthRegex = /^(0[1-9]|1[0-2])$/;
+        const yearRegex = /^(202[6-9]|20[3-9]\d|2[1-9]\d{2}|[3-9]\d{3})$/;
+        const cvcRegex = /^\d{3}$/;
+
+        return (
+            ibanRegex.test(iban) &&
+            monthRegex.test(expirationMonth) &&
+            yearRegex.test(expirationYear) &&
+            cvcRegex.test(cvc)
+        );
+    };
+
+    // Enregistrer la reservation, si aucun crash alors on va vers la page succes, sinon fail
+    const nextPage = () => {
+        props.onFail()
+    }
+
     return (
         <View style={style.page}>
             <View style={style.container}>
@@ -25,32 +49,52 @@ export default function ReservationStep3(props: Props) {
                     <Text style={style.title}>Réservation</Text>
                 </View>
 
-                <View>
-                    <Text>Iban : </Text>
-                    <TextInput
-                        style={style.input}
-                        keyboardType="numeric"
-                        onChangeText={setIban}
-                    ></TextInput>
+                <View style={style.container}>
+                    <View>
+
+                        <Text>Iban : </Text>
+                        <TextInput
+                            style={style.input}
+                            keyboardType="numeric"
+                            value={iban}
+                            onChangeText={setIban}
+                            maxLength={16}
+                        ></TextInput>
+                    </View>
                     <View style={style.flex}>
-                        <View style={style.flex}>
+                        <View style={style.fieldGroup}>
                             <Text>Expiration : </Text>
-                            <TextInput
-                                style={style.input}
-                                keyboardType="numeric"
-                                onChangeText={setIban}
-                            ></TextInput>
+                            <View style={style.expirationGroup}>
+
+
+                                <TextInput
+                                    style={[style.input, style.expirationInput]}
+                                    keyboardType="numeric"
+                                    onChangeText={setExpirationMonth}
+                                    maxLength={2}
+                                />
+                                <Text>/</Text>
+                                <TextInput
+                                    style={[style.input, style.expirationInput]}
+                                    keyboardType="numeric"
+                                    onChangeText={setExpirationYear}
+                                    maxLength={4}
+                                />
+                            </View>
                         </View>
-                        <View style={style.flex}>
-                            <Text>Expiration : </Text>
+                        <View style={style.fieldGroup}>
+                            <Text>Code CVC : </Text>
                             <TextInput
                                 style={style.input}
                                 keyboardType="numeric"
-                                onChangeText={setIban}
-                            ></TextInput>
+                                onChangeText={setCvc}
+                                maxLength={3}
+                            />
                         </View>
                     </View>
-
+                </View>
+                <View style={style.marginAuto}>
+                    <Text style={style.endText}>Total à payer : {props.event.price * 9}</Text>
                 </View>
             </View>
 
@@ -58,7 +102,8 @@ export default function ReservationStep3(props: Props) {
                 <Pressable style={style.backButton} onPress={() => props.onBack()}>
                     <Text style={style.ButtonText}>Retour</Text>
                 </Pressable>
-                <Pressable style={style.nextButton} onPress={() => props.onClose()}>
+                <Pressable style={[style.nextButton, !formCorrect() && style.inputDisabled]} onPress={() => nextPage()}
+                           disabled={!formCorrect()}>
                     <Text style={[style.ButtonText, style.w]}>Continuer</Text>
                 </Pressable>
             </View>
@@ -72,8 +117,12 @@ const style = StyleSheet.create({
     },
     flex: {
         display: "flex",
-        justifyContent: "space-between",
         flexDirection: "row",
+        gap: 100
+    },
+    fieldGroup: {
+        flex: 1,
+        flexDirection: "column",
     },
     page: {
         display: "flex",
@@ -84,7 +133,7 @@ const style = StyleSheet.create({
     container: {
         display: "flex",
         flexDirection: "column",
-        gap: 15,
+        gap: 10,
     },
     stepsContainer: {
         flexDirection: 'row',
@@ -140,5 +189,21 @@ const style = StyleSheet.create({
     },
     inputDisabled: {
         opacity: 0.6,
+        backgroundColor: colors.lightBlue,
     },
+    marginAuto: {
+        margin: "auto",
+    },
+    endText: {
+        fontWeight: "bold",
+        color: colors.blue,
+    },
+    expirationGroup: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 5
+    },
+    expirationInput: {
+        flex: 1
+    }
 });

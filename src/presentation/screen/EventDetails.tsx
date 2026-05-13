@@ -18,6 +18,8 @@ import DisplayEventDetails from "../../application/usecase/DisplayEventDetails";
 import {Event} from "../../domain/core/Event";
 import {useNavigation} from "@react-navigation/native";
 import {useInjection} from "../hooks/ioc.react";
+import ReservationSucces from "../components/reservation/ReservationSucces";
+import ReservationFail from "../components/reservation/ReservationFail";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Details">;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
@@ -133,48 +135,63 @@ export default function EventDetails({route}: Props) {
                 </Pressable>
             </View>
 
-            <Modal visible={modalVisible} transparent animationType="slide" onRequestClose={resetModal}>
-                <View style={actual.modalContainer}>
-                    <View>
+            <Modal visible={modalVisible} transparent animationType="none" onRequestClose={resetModal}>
+                <View style={actual.backdrop}>
 
+                    <View style={actual.modalContainer}>
                         <View>
-                            {[1, 2, 3].map(i => (
-                                <View key={i}/>
-                            ))}
+
+                            <View>
+                                {[1, 2, 3].map(i => (
+                                    <View key={i}/>
+                                ))}
+                            </View>
+
+                            {step === 1 && (
+                                <ReservationStep1
+                                    count={count}
+                                    onChange={setCount}
+                                    onBack={resetModal}
+                                    onNext={() => {
+                                        setNames(Array(count).fill(''));
+                                        setStep(2);
+                                    }}
+                                />
+                            )}
+                            {step === 2 && (
+                                <ReservationStep2
+                                    names={names}
+                                    onChange={setNames}
+                                    onBack={() => setStep(1)}
+                                    onNext={() => setStep(3)}
+                                    count={count.valueOf()}
+                                />
+                            )}
+                            {step === 3 && (
+                                <ReservationStep3
+                                    event={actualEvent}
+                                    count={count}
+                                    names={names}
+                                    onBack={() => setStep(2)}
+                                    onFail={() => setStep(5)}
+                                    onSucces={() => setStep(4)}
+                                />
+                            )}
+                            {step === 4 && (
+                                <ReservationSucces
+                                    event={actualEvent}
+                                    count={count}
+                                    names={names}
+                                    onClose={resetModal}/>
+                            )}
+                            {step === 5 && (
+                                <ReservationFail onClose={()=>setStep(1)}/>
+                            )}
+
                         </View>
-
-                        {step === 1 && (
-                            <ReservationStep1
-                                count={count}
-                                onChange={setCount}
-                                onBack={resetModal}
-                                onNext={() => {
-                                    setNames(Array(count).fill(''));
-                                    setStep(2);
-                                }}
-                            />
-                        )}
-                        {step === 2 && (
-                            <ReservationStep2
-                                names={names}
-                                onChange={setNames}
-                                onBack={() => setStep(1)}
-                                onNext={() => setStep(3)}
-                                count={count.valueOf()}
-                            />
-                        )}
-                        {step === 3 && (
-                            <ReservationStep3
-                                event={actualEvent}
-                                count={count}
-                                names={names}
-                                onBack={() => setStep(2)}
-                                onClose={resetModal}
-                            />
-                        )}
-
                     </View>
                 </View>
+
             </Modal>
         </View>
     );
@@ -217,5 +234,9 @@ const actual = StyleSheet.create({
         backgroundColor: colors.white,
         width: "90%",
         height: "30%",
+    },
+    backdrop: {
+        flex: 1,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
     }
 })

@@ -1,5 +1,4 @@
 import {View, Text, Pressable, StyleSheet, TextInput} from 'react-native';
-import {inspect} from "node:util";
 import {styles} from '../../styles';
 import {colors} from "../../colors";
 import {Input} from "postcss";
