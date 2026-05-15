@@ -138,11 +138,11 @@ export const styles = StyleSheet.create({
         width: '60%',
     },
     ecTitle: {
-        color: 'white',
+        color: colors.white,
         fontWeight: 'bold',
     },
     ecDate: {
-        color: 'white',
+        color: colors.white,
     },
     eclocationContainer: {
         flexDirection: 'row',

@@ -6,3 +6,16 @@ export type SettingType = {
     redirection?: keyof RootStackParamList;
     action?: 'logout';
 };
+
+export type Location = {
+    name: string;
+    address: string;
+    city?: string;
+    lon: number;
+    lat: number;
+}
+
+export type ValidationError = {
+    field: string;
+    message: string;
+};
