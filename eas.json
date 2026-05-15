@@ -1,9 +1,21 @@
 {
   "build": {
-    "production": {
-      "env": {
-        "JAVA_TOOL_OPTIONS": "-XX:+IgnoreUnrecognizedVMOptions"
+    "preview": {
+      "android": {
+        "buildType": "apk"
       }
-    }
+    },
+    "preview2": {
+      "android": {
+        "gradleCommand": ":app:assembleRelease"
+      }
+    },
+    "preview3": {
+      "developmentClient": true
+    },
+    "preview4": {
+      "distribution": "internal"
+    },
+    "production": {}
   }
 }

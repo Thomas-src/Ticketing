@@ -6,6 +6,10 @@ export const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
     },
+    message: {
+        textAlign: 'center',
+        paddingBottom: 10,
+    },
     flexGrow: {
         flexGrow: 1
     },

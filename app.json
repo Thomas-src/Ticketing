@@ -28,7 +28,8 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      "expo-secure-store"
     ],
     "extra": {
       "eas": {
@@ -55,6 +56,21 @@
       "react-native-nfc-manager",
       {
         "nfcPermissionAndroid": "L'application a besoin d'utiliser la NFC pour lire des tags."
+      }
+    ],
+    [
+      "expo-secure-store",
+      {
+        "configureAndroidBackup": true,
+        "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face IDbiometric data."
+      }
+    ],
+    [
+      "expo-camera",
+      {
+        "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+        "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+        "barcodeScannerEnabled": true
       }
     ]
   ]

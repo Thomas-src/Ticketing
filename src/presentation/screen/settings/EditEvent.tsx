@@ -1,4 +1,4 @@
-import {StyleSheet,} from 'react-native';
+import {StyleSheet, View,} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../types/RootStackParamList';
 import {colors} from '../../colors';
@@ -56,6 +56,9 @@ export function validateEvent(form: EventForm): ValidationError[] {
 
 export default function EditEvent({navigation, route}: Props) {
 
+    return (<View style={styles.container}>
+        
+    </View>)
 }
 
 const styles = StyleSheet.create({

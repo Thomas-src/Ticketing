@@ -2,7 +2,6 @@ import IReservationRepository from "../../domain/repository/IReservationReposito
 import {injectable} from "inversify";
 import {pb} from "../pocketbaseClient";
 
-
 const collectionName = "reservations";
 @injectable()
 export default class ReservationRepositoryPocketBase extends IReservationRepository {
@@ -12,13 +11,16 @@ export default class ReservationRepositoryPocketBase extends IReservationReposit
 
     async verifyTicket(eventId: string, token: string): Promise<boolean> {
         try {
-            await pb
+            const reservation = await pb
                 .collection(collectionName)
-                .getFirstListItem(
-                    `token = "${token}" && events ~ "${eventId}"`
-                );
-            return true;
-        } catch {
+                .getFirstListItem(`token = "${token}" && events ~ "${eventId}"`);
+
+            if (!reservation.scanned) {
+                await pb.collection(collectionName).update(reservation.id, {scanned: true});
+            }
+            return !reservation.scanned;
+        } catch (e) {
+            console.error(e);
             return false;
         }
     }
