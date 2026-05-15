@@ -109,7 +109,7 @@ export default function TabNavigator() {
                 component={withLayout(EventDetails)}
                 options={{
                     tabBarButton: () => null,
-                    tabBarItemStyle: {display: 'none'},  // ← supprime l'espace réservé
+                    tabBarItemStyle: {display: 'none'},
                 }}
             />
         </Tab.Navigator>

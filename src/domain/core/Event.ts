@@ -1,5 +1,6 @@
 import {Tag} from "./Tag";
-import { Address } from "./Address";
+import {Address} from "./Address";
+
 export class Event {
     readonly #title: string;
     readonly #id: string;
@@ -9,11 +10,10 @@ export class Event {
     readonly #endAt: Date;
     readonly #image: string;
     readonly #tags: Tag[];
-    readonly #owner: string;
     readonly #price: number;
     readonly #address: Address;
 
-    constructor(id: string, title: string, description: string, size: number, startAt: Date, endAt: Date, image: string, tags: Tag[] = [], owner: string, price: number, address: Address) {
+    constructor(id: string, title: string, description: string, size: number, startAt: Date, endAt: Date, image: string, tags: Tag[] = [], price: number, address: Address) {
         this.#id = id;
         this.#title = title;
         this.#description = description;
@@ -22,7 +22,6 @@ export class Event {
         this.#endAt = endAt;
         this.#image = image;
         this.#tags = tags;
-        this.#owner = owner;
         this.#price = price;
         this.#address = address;
     }
@@ -57,10 +56,6 @@ export class Event {
 
     get tags(): Tag[] {
         return this.#tags;
-    }
-
-    get owner(): string {
-        return this.#owner;
     }
 
     get price(): number {

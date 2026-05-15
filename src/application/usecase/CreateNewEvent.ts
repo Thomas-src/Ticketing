@@ -10,7 +10,7 @@ export default class CreateNewEvent {
     ) {
     }
 
-    async execute(event: Event): Promise<boolean> {
+    async execute(event: Event): Promise<Event> {
         return await this.repo.saveEvent(event);
     }
 }

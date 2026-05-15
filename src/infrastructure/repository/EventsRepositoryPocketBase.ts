@@ -1,8 +1,11 @@
 import IEventsRepository from "../../domain/repository/IEventsRepository";
 import {pb} from "../pocketbaseClient";
 import {Event} from "../../domain/core/Event";
-import {toAddress, toTags} from "./Mapper";
+import {mapEvent} from "./Mapper";
 import {injectable} from "inversify";
+import {Address} from "../../domain/core/Address";
+import {Tag} from "../../domain/core/Tag";
+import {Platform} from "react-native";
 
 const collectionName = "events";
 @injectable()
@@ -35,21 +38,7 @@ export default class EventsRepositoryPocketBase extends IEventsRepository {
                 return count < Number(event.size);
             });
 
-            return available.map((r) => {
-                return new Event(
-                    r.id,
-                    r.title,
-                    r.description,
-                    r.size,
-                    new Date(r.startAt),
-                    new Date(r.endAt),
-                    pb.files.getURL(r, r.image),
-                    toTags(r.expand?.tags ?? []),
-                    r.ownerId,
-                    r.price,
-                    toAddress(r.expand?.locations)
-                );
-            });
+            return available.map((r) => mapEvent(r));
         } catch (error) {
             console.error(error);
             throw new Error("Impossible de récupérer les événements");
@@ -62,19 +51,7 @@ export default class EventsRepositoryPocketBase extends IEventsRepository {
                 expand: "tags,members,locations",
             });
 
-            return new Event(
-                record.id,
-                record.title,
-                record.description,
-                record.size,
-                new Date(record.startAt),
-                new Date(record.endAt),
-                pb.files.getURL(record, record.image),
-                toTags(record.expand?.tags ?? []),
-                record.ownerId,
-                record.price,
-                toAddress(record.expand?.locations)
-            );
+            return mapEvent(record);
 
         } catch (error) {
             console.error(error);
@@ -83,64 +60,99 @@ export default class EventsRepositoryPocketBase extends IEventsRepository {
     }
 
 
-    async saveEvent(event: Event): Promise<boolean> {
+    async saveEvent(event: Event): Promise<Event> {
+        const authUserId = pb.authStore.record?.id;
+
+        if (!authUserId) {
+            throw new Error("Utilisateur non connecté");
+        }
         try {
-            const authUserId = pb.authStore.record?.id;
-            if (!authUserId) {
-                throw new Error("Utilisateur non connecté");
+            const tagIds = await this.resolveTags(event.tags);
+            const locationId = await this.resolveLocation(event.address);
+
+            const data = new FormData();
+
+            data.append("title", event.title);
+            data.append("description", event.description);
+            data.append("size", String(event.size));
+            data.append("startAt", event.startAt.toISOString());
+            data.append("endAt", event.endAt.toISOString());
+            data.append("price", String(event.price));
+            data.append("ownerId", authUserId);
+            data.append("locations", locationId);
+
+            tagIds.forEach(tagId => {
+                data.append("tags", tagId);
+            });
+
+            if (event.image) {
+                if (Platform.OS === "web") {
+                    const req = await fetch(event.image);
+                    const blob = await req.blob();
+
+                    data.append("image", blob);
+                } else {
+                    data.append("image", {
+                        uri: event.image,
+                        type: "image/jpeg",
+                        name: event.image.split("/").pop() || "image.jpg",
+                    } as any);
+                }
             }
 
-            const tagIds = await Promise.all(
-                event.tags.map(async (tag) => {
-                    try {
-                        const existing = await pb.collection("tags")
-                            .getFirstListItem(`slug = "${tag.slug}"`);
-                        return existing.id;
-                    } catch {
-                        const created = await pb.collection("tags")
-                            .create({name: tag.name, slug: tag.slug});
-                        return created.id;
-                    }
-                })
-            );
+            const createdEvent = await pb.collection("events").create(data);
 
-            let locationId: string;
-            try {
-                const existing = await pb.collection("locations").getFirstListItem(`name = "${event.address.name}"`);
-                locationId = existing.id;
-            } catch {
-                const created = await pb.collection("locations").create({
-                    name: event.address.name,
-                    address: event.address.address,
-                    city: event.address.city,
-                    street: event.address.street,
-                    postalCode: event.address.postalCode,
-                });
-                locationId = created.id;
+            const result = await this.findEventById(createdEvent.id);
+
+            if (result == null) {
+                throw new Error("Event not found");
             }
-
-            const data = {
-                title: event.title,
-                description: event.description,
-                size: event.size,
-                startAt: event.startAt.toISOString(),
-                endAt: event.endAt.toISOString(),
-                tags: tagIds,
-                locations: locationId,
-                price: event.price,
-                ownerId: authUserId,
-            };
-
-            if (event.id) {
-                await pb.collection(collectionName).update(event.id, data);
-            } else {
-                await pb.collection(collectionName).create(data);
-            }
-
-            return true;
+            return result;
         } catch (error) {
             console.error(error);
-            return false;
+            throw error;
+        }
+    }
+
+    private async resolveTags(tags: Tag[]) {
+        return Promise.all(
+            tags.map(async (tag) => {
+                try {
+                    const existing = await pb
+                        .collection("tags")
+                        .getFirstListItem(`name="${tag.name}"`);
+
+                    return existing.id;
+                } catch {
+                    const created = await pb
+                        .collection("tags")
+                        .create(tag);
+
+                    return created.id;
+                }
+            })
+        );
+    }
+
+    private async resolveLocation(address: Address) {
+        try {
+            const existing = await pb
+                .collection("locations")
+                .getFirstListItem(
+                    `name="${address.name}"`
+                );
+
+            return existing.id;
+        } catch {
+            const created = await pb
+                .collection("locations")
+                .create({
+                    name: address.name,
+                    address: address.address,
+                    city: address.city,
+                });
+
+            return created.id;
         }
     }
 }
