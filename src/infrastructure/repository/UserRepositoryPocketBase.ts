@@ -3,10 +3,26 @@ import IUserRepository from "../../domain/repository/IUserRepository";
 import {pb} from "../pocketbaseClient";
 import {PocketBaseClientError} from "../PocketTypes";
 import {injectable} from "inversify";
+import {Role} from "../../domain/core/Role";
 
 const collectionName = "members";
 @injectable()
 export default class UserRepositoryPocketBase extends IUserRepository {
+    async updateRole(role: Role): Promise<void> {
+        const authUserId = pb.authStore.record?.id;
+        if (!authUserId) {
+            throw new Error("Utilisateur non connecté");
+        }
+
+        try {
+            await pb.collection("members").update(authUserId, {
+                role: role,
+            });
+        } catch (error) {
+            console.error(error);
+            throw new Error("Impossible de mettre à jour le rôle");
+        }
+    }
 
     async saveUser(user: User, password: string): Promise<void> {
         try {

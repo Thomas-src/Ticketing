@@ -36,7 +36,7 @@ const StaffNavigations: SettingType[] = [
     },
     {
         title: "Vérifier des tickets",
-        redirection: "Signup",
+        redirection: "VerifyTicket",
         color: colors.blue
     },
     {
@@ -49,7 +49,7 @@ const StaffNavigations: SettingType[] = [
 const AdminNavigations: SettingType[] = [
     {
         title: "Créer un évènement",
-        redirection: "Signup",
+        redirection: "CreateEvent",
         color: colors.blue
     },
     {
