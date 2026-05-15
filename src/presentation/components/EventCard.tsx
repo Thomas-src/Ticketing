@@ -1,20 +1,18 @@
 import {FlatList, Image, Pressable, Text, View} from "react-native";
 import {styles} from "../styles";
 import {MapPin} from "lucide-react-native";
-import {NativeStackNavigationProp} from "@react-navigation/native-stack";
-import {RootStackParamList} from "../../types/RootStackParamList";
-import {useNavigation} from "@react-navigation/native";
 import {colors} from "../colors";
 import {Event} from "../../domain/core/Event"
 
 type Props = {
     event: Event;
+    action: () => void;
+    actionName: string;
 };
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-export default function EventCard({event}: Props) {
-    const navigation = useNavigation<NavigationProp>();
-    const {id, title, startAt, tags, address} = event;
+
+export default function EventCard({event, action, actionName}: Props) {
+    const {title, startAt, tags, address} = event;
     const formatHour = (date: Date) => {
         return date.toLocaleTimeString("fr-BE", {
             hour: "2-digit",
@@ -30,7 +28,6 @@ export default function EventCard({event}: Props) {
             </View>
 
             <View style={styles.flex}>
-
                 <View style={styles.ecContainerInf}>
                     <Text style={styles.ecTitle}>{title}</Text>
                     <Text style={styles.ecDate}>
@@ -47,10 +44,8 @@ export default function EventCard({event}: Props) {
 
                 <View style={styles.ecContainerBut}>
                     <View style={styles.ecButtonContainer}>
-                        <Pressable style={styles.button} onPress={() => navigation.navigate("Details", {
-                            eventId: id
-                        })}>
-                            <Text style={styles.buttonText}>Réserver</Text>
+                        <Pressable style={styles.button} onPress={action}>
+                            <Text style={styles.buttonText}>{actionName}</Text>
                         </Pressable>
 
                     </View>
@@ -65,9 +60,7 @@ export default function EventCard({event}: Props) {
                             contentContainerStyle={{gap: 3}}
                         />
                     </View>
-
                 </View>
-
             </View>
         </View>
     );

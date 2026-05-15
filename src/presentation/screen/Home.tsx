@@ -6,6 +6,9 @@ import GetAvaiblesEvents from "../../application/usecase/GetAvaiblesEvents";
 import {Event} from "../../domain/core/Event";
 import {useEffect, useRef, useState} from "react";
 import {useInjection} from "../hooks/ioc.react";
+import {useNavigation} from "@react-navigation/native";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {RootStackParamList} from "../../types/RootStackParamList";
 
 const getMessage = (): string => {
     const hour = new Date().getHours();
@@ -13,9 +16,10 @@ const getMessage = (): string => {
     if (hour < 18) return "Bon après-midi ";
     return "Bonsoir ";
 };
-
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 export default function Home() {
     const avaiblesEvents = useInjection<GetAvaiblesEvents>(GetAvaiblesEvents);
+    const navigation = useNavigation<NavigationProp>();
 
     const {user} = useAuth();
     const date = useRef(new Date()).current;
@@ -67,7 +71,9 @@ export default function Home() {
                 data={events}
                 keyExtractor={(item: Event) => item.id}
                 renderItem={({item}) => (
-                    <EventCard event={item}/>
+                    <EventCard event={item} actionName="Réserver" action={() => navigation.navigate("Details", {
+                        eventId: item.id
+                    })}/>
                 )}
                 contentContainerStyle={{gap: 12}}
                 refreshing={loading}

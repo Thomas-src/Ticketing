@@ -9,6 +9,7 @@ import CreateEvent from "../screen/settings/CreateEvent";
 import ManageEvent from "../screen/settings/ManageEvent";
 import VerifyTicket from "../screen/settings/VerifyTicket";
 import ManageTeam from "../screen/settings/ManageTeam";
+import EditEvent from "../screen/settings/EditEvent";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -31,6 +32,7 @@ export default function AccountNavigator() {
             <Stack.Screen name="CreateEvent" component={withLayout(CreateEvent)}/>
             <Stack.Screen name="ManageEvent" component={withLayout(ManageEvent)}/>
             <Stack.Screen name="ManageTeam" component={withLayout(ManageTeam)}/>
+            <Stack.Screen name="EditEvent" component={withLayout(EditEvent)}/>
 
             <Stack.Screen name="VerifyTicket" component={withLayout(VerifyTicket)}/>
         </Stack.Navigator>

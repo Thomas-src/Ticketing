@@ -10,6 +10,25 @@ import {Platform} from "react-native";
 const collectionName = "events";
 @injectable()
 export default class EventsRepositoryPocketBase extends IEventsRepository {
+    updateEvent(id: string, event: Event): Promise<boolean> {
+        throw new Error("Method not implemented.");
+    }
+
+    async findOwnerEvents(): Promise<Event[]> {
+        const authUserId = pb.authStore.record?.id;
+
+        if (!authUserId) {
+            throw new Error("Utilisateur non connecté");
+        }
+        const record = await pb.collection(collectionName).getFullList({
+            filter: `ownerId = "${authUserId}"`,
+            expand: "tags,members,locations",
+        })
+
+        return record.map((r) => mapEvent(r));
+
+    }
+
     async findAvailableEvents(date: Date): Promise<Event[]> {
         try {
             const [records, reservations] = await Promise.all([

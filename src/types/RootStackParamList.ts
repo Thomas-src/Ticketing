@@ -11,5 +11,6 @@ export type RootStackParamList = {
     ManageEvent: undefined;
     ManageTeam: undefined;
     VerifyTicket: undefined;
+    EditEvent: { eventId: string };
 
 };

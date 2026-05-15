@@ -30,6 +30,7 @@ type EventForm = {
     addressName: string;
     address: string;
     image: string;
+    price: string;
 };
 
 export function validateEvent(form: EventForm): ValidationError[] {
@@ -64,7 +65,10 @@ export function validateEvent(form: EventForm): ValidationError[] {
     if (!form.address.trim()) {
         errors.push({field: "address", message: "L'adresse est requise."});
     }
-
+    const priceNum = parseFloat(form.price);
+    if (!form.seats || isNaN(priceNum) || priceNum < 0) {
+        errors.push({field: "price", message: "Le prix ne peut pas être négatif."});
+    }
     return errors;
 }
 
@@ -78,6 +82,7 @@ export default function CreateEvent({navigation}: Props) {
     const [imageName, setImageName] = useState<string | null>(null);
     const [seats, setSeats] = useState('');
     const [tags, setTags] = useState<string[]>([]);
+    const [price, setPrice] = useState('');
 
     const [startAt, setStartAt] = useState(new Date());
     const [endAt, setEndAt] = useState(new Date());
@@ -100,8 +105,7 @@ export default function CreateEvent({navigation}: Props) {
 
     const handleSubmit = async () => {
         const validationErrors = validateEvent({
-            title, description, seats, tags,
-            startAt, endAt, addressName, address, image
+            title, description, seats, tags, startAt, endAt, addressName, address, image, price
         });
 
         if (validationErrors.length > 0) {
@@ -114,7 +118,7 @@ export default function CreateEvent({navigation}: Props) {
         console.log(addressName);
         const EventAddress = new Address(addressName, address, city)
         const EventTags: Tag[] = tags.map((tag) => new Tag(tag));
-        const event = new Event("0", title, description, parseInt(seats, 10), startAt, endAt, image, EventTags, 10, EventAddress);
+        const event = new Event("-1", title, description, parseInt(seats, 10), startAt, endAt, image, EventTags, parseFloat(price), EventAddress);
         try {
             console.log("creation event", event);
             const EventCreated = await createEvent.execute(event);
@@ -203,6 +207,18 @@ export default function CreateEvent({navigation}: Props) {
                             }}
                             multiline
                             style={{minHeight: 80, textAlignVertical: 'top'}}
+                        />
+                    </FieldRow>
+                    <FieldRow icon={<FileText color={colors.white} size={16}/>} label="Tarif"
+                              error={getError('price')}>
+                        <TextFieldInput
+                            placeholder="Prix de votre évènement…"
+                            value={price}
+                            onChangeText={(p) => {
+                                setPrice(p);
+                                clearError('price');
+                            }}
+                            keyboardType="numeric"
                         />
                     </FieldRow>
 
