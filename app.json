@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -21,14 +21,20 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.ticket"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "@react-native-community/datetimepicker"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "d75d5ac2-16ff-4bba-9a9b-d2a7a5fff9f3"
+      }
+    }
   },
   "plugins": [
     [
@@ -43,6 +49,12 @@
             "cropToolbarColor": "#000000"
           }
         }
+      }
+    ],
+    [
+      "react-native-nfc-manager",
+      {
+        "nfcPermissionAndroid": "L'application a besoin d'utiliser la NFC pour lire des tags."
       }
     ]
   ]

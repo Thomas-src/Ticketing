@@ -1,0 +1,9 @@
+{
+  "build": {
+    "production": {
+      "env": {
+        "JAVA_TOOL_OPTIONS": "-XX:+IgnoreUnrecognizedVMOptions"
+      }
+    }
+  }
+}
