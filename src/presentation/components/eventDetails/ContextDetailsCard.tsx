@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, Image, FlatList} from "react-native";
+import {FlatList, Image, StyleSheet, Text, View} from "react-native";
 import {styles} from "../../styles";
 import {colors} from "../../colors";
 
@@ -8,6 +8,7 @@ type Props = {
     seatsLeft?: number;
     tags?: string[];
     image?: string;
+    price?: number;
 }
 
 export default function ContextDetailsCard(props: Props) {
@@ -19,12 +20,14 @@ export default function ContextDetailsCard(props: Props) {
         <View style={CardStyle.contentContainer}>
             <Text style={[CardStyle.title, CardStyle.w]}>{props.name}</Text>
             <Text style={CardStyle.w}>{props.description}</Text>
+            <Text style={CardStyle.w}>Tarif : {props.price}€</Text>
             <View style={CardStyle.endContainer}>
                 <Text style={CardStyle.w}>Nb places disponibles : {props.seatsLeft}</Text>
+
                 <FlatList
                     horizontal={true}
-                    contentContainerStyle={{ gap: 8 }}
-                    style={{flexGrow:0}}
+                    contentContainerStyle={{gap: 8}}
+                    style={{flexGrow: 0}}
                     data={props.tags}
                     renderItem={({item}) => (
                         <Text style={styles.tag}>{item}</Text>
@@ -48,7 +51,7 @@ const CardStyle = StyleSheet.create({
         borderRadius: 12,
         overflow: "hidden",
         backgroundColor: colors.lightBlue,
-        },
+    },
     imageContainer: {
         height: 150,
 

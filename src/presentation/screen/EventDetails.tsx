@@ -115,6 +115,7 @@ export default function EventDetails({route}: Props) {
                 tags={actualEvent?.tags?.map(t => t.name) ?? []}
                 seatsLeft={actualEvent?.size}
                 image={actualEvent?.image}
+                price={actualEvent?.price}
             />
             <ContextWhenCard
                 beginDate={actualEvent?.startAt}
@@ -185,7 +186,7 @@ export default function EventDetails({route}: Props) {
                                     onClose={resetModal}/>
                             )}
                             {step === 5 && (
-                                <ReservationFail onClose={()=>setStep(1)}/>
+                                <ReservationFail onClose={() => setStep(1)}/>
                             )}
 
                         </View>
