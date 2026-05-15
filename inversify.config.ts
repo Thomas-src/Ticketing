@@ -10,12 +10,14 @@ import IEventsRepository from "./src/domain/repository/IEventsRepository";
 import EventsRepositoryPocketBase from "./src/infrastructure/repository/EventsRepositoryPocketBase";
 import GetAvaiblesEvents from "./src/application/usecase/GetAvaiblesEvents";
 import CreateNewEvent from "./src/application/usecase/CreateNewEvent";
+import GetOwnerEvents from "./src/application/usecase/GetOwnerEvents";
 import ITagRepository from "./src/domain/repository/ITagRepository";
 import TagRepositoryPocketBase from "./src/infrastructure/repository/TagRepositoryPocketBase";
 import {TagManager} from "./src/domain/core/services/TagManager";
 import LocationRepositoryMapBox from "./src/infrastructure/repository/LocationRepositoryMapBox";
 import ILocationRepository from "./src/domain/repository/ILocationRepository";
 import {LocationFinder} from "./src/domain/core/services/LocationFinder";
+import UpdateEvent from "./src/application/usecase/UpdateEvent";
 
 
 const container = new Container({defaultScope: "Singleton"});
@@ -38,6 +40,7 @@ container.bind(LoginUser).toSelf();
 container.bind(DisplayEventDetails).toSelf();
 container.bind(GetAvaiblesEvents).toSelf();
 container.bind(CreateNewEvent).toSelf();
-
+container.bind(GetOwnerEvents).toSelf();
+container.bind(UpdateEvent).toSelf();
 
 export {container};

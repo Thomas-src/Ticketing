@@ -4,7 +4,7 @@ import {colors} from '../../colors';
 import FieldError from './FieldError';
 
 type Props = {
-    icon: React.ReactNode;
+    icon?: React.ReactNode;
     label: string;
     children: React.ReactNode;
     elevated?: boolean;
