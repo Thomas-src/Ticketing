@@ -4,6 +4,7 @@ import {pb} from "../pocketbaseClient";
 import {PocketBaseClientError} from "../PocketTypes";
 import {injectable} from "inversify";
 import {Role} from "../../domain/core/Role";
+import {sanitize} from "../utils";
 
 const collectionName = "members";
 @injectable()
@@ -13,10 +14,10 @@ export default class UserRepositoryPocketBase extends IUserRepository {
         if (!authUserId) {
             throw new Error("Utilisateur non connecté");
         }
-
+        const clean = sanitize({role});
         try {
             await pb.collection("members").update(authUserId, {
-                role: role,
+                role: clean.role,
             });
         } catch (error) {
             console.error(error);

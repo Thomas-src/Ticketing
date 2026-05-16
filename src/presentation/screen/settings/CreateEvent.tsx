@@ -1,5 +1,5 @@
 import {Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View,} from 'react-native';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../types/RootStackParamList';
@@ -17,6 +17,7 @@ import {Location, ValidationError} from '../../../types/ScreenType';
 import {Address} from "../../../domain/core/Address";
 import {Event} from "../../../domain/core/Event";
 import {Tag} from "../../../domain/core/Tag";
+import {useFocusEffect} from "@react-navigation/core";
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
@@ -33,7 +34,22 @@ type EventForm = {
     price: string;
 };
 
-export function validateEvent(form: EventForm): ValidationError[] {
+const initialForm = {
+    title: '',
+    description: '',
+    image: '',
+    imageName: null as string | null,
+    seats: '',
+    tags: [] as string[],
+    price: '',
+    startAt: new Date(),
+    endAt: new Date(),
+    addressName: '',
+    address: '',
+    city: '',
+};
+
+function validateEvent(form: EventForm): ValidationError[] {
     const errors: ValidationError[] = [];
 
     if (form.title.trim().length < 5) {
@@ -76,24 +92,24 @@ export default function CreateEvent({navigation}: Props) {
     const createEvent = useInjection<CreateNewEvent>(CreateNewEvent);
     const tagManager = useInjection<TagManager>(TagManager);
 
-    const [title, setTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [image, setImage] = useState<string>("");
-    const [imageName, setImageName] = useState<string | null>(null);
-    const [seats, setSeats] = useState('');
-    const [tags, setTags] = useState<string[]>([]);
-    const [price, setPrice] = useState('');
+    const [title, setTitle] = useState(initialForm.title);
+    const [description, setDescription] = useState(initialForm.description);
+    const [image, setImage] = useState<string>(initialForm.image);
+    const [imageName, setImageName] = useState<string | null>(initialForm.imageName);
+    const [seats, setSeats] = useState(initialForm.seats);
+    const [tags, setTags] = useState<string[]>(initialForm.tags);
+    const [price, setPrice] = useState(initialForm.price);
 
-    const [startAt, setStartAt] = useState(new Date());
-    const [endAt, setEndAt] = useState(new Date());
+    const [startAt, setStartAt] = useState(initialForm.startAt);
+    const [endAt, setEndAt] = useState(initialForm.endAt);
     const [showStartDatePicker, setShowStartDatePicker] = useState(false);
     const [showStartTimePicker, setShowStartTimePicker] = useState(false);
     const [showEndDatePicker, setShowEndDatePicker] = useState(false);
     const [showEndTimePicker, setShowEndTimePicker] = useState(false);
 
-    const [addressName, setAddressName] = useState('');
-    const [address, setAddress] = useState('');
-    const [city, setCity] = useState('');
+    const [addressName, setAddressName] = useState(initialForm.addressName);
+    const [address, setAddress] = useState(initialForm.address);
+    const [city, setCity] = useState(initialForm.city);
 
     const [availableTags, setAvailableTags] = useState<string[]>([]);
     const [tagsLoaded, setTagsLoaded] = useState(false);
@@ -115,14 +131,25 @@ export default function CreateEvent({navigation}: Props) {
         }
 
         setErrors([]);
-        console.log(addressName);
         const EventAddress = new Address(addressName, address, city)
         const EventTags: Tag[] = tags.map((tag) => new Tag(tag));
         const event = new Event("-1", title, description, parseInt(seats, 10), startAt, endAt, image, EventTags, parseFloat(price), EventAddress);
         try {
-            console.log("creation event", event);
             const EventCreated = await createEvent.execute(event);
-            console.log('Submit', {title, description, seats, tags, startAt, endAt, address, city});
+
+            setTitle(initialForm.title);
+            setDescription(initialForm.description);
+            setImage(initialForm.image);
+            setImageName(initialForm.imageName);
+            setSeats(initialForm.seats);
+            setTags(initialForm.tags);
+            setPrice(initialForm.price);
+            setStartAt(initialForm.startAt);
+            setEndAt(initialForm.endAt);
+            setAddressName(initialForm.addressName);
+            setAddress(initialForm.address);
+            setCity(initialForm.city);
+            setErrors([]);
             navigation.navigate("Details", {
                 eventId: EventCreated.id
             })
@@ -131,6 +158,25 @@ export default function CreateEvent({navigation}: Props) {
             setErrors([{field: "none", message: "Une erreur s'est produite, veuillez réassayer"}]);
         }
     }
+    useFocusEffect(
+        useCallback(() => {
+            return () => {
+                setTitle(initialForm.title);
+                setDescription(initialForm.description);
+                setImage(initialForm.image);
+                setImageName(initialForm.imageName);
+                setSeats(initialForm.seats);
+                setTags(initialForm.tags);
+                setPrice(initialForm.price);
+                setStartAt(initialForm.startAt);
+                setEndAt(initialForm.endAt);
+                setAddressName(initialForm.addressName);
+                setAddress(initialForm.address);
+                setCity(initialForm.city);
+                setErrors([]);
+            };
+        }, [])
+    );
 
     const pickImage = async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();

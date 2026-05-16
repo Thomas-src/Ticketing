@@ -6,11 +6,13 @@ import {injectable} from "inversify";
 import {Address} from "../../domain/core/Address";
 import {Tag} from "../../domain/core/Tag";
 import {Platform} from "react-native";
+import {sanitize} from "../utils";
 
 const collectionName = "events";
 @injectable()
 export default class EventsRepositoryPocketBase extends IEventsRepository {
     updateEvent(id: string, event: Event): Promise<boolean> {
+        const clean = sanitize({id, event});
         throw new Error("Method not implemented.");
     }
 
@@ -65,8 +67,9 @@ export default class EventsRepositoryPocketBase extends IEventsRepository {
     }
 
     async findEventById(id: string): Promise<Event | null> {
+        const clean = sanitize({id});
         try {
-            const record = await pb.collection(collectionName).getOne(id, {
+            const record = await pb.collection(collectionName).getOne(clean.id, {
                 expand: "tags,members,locations",
             });
 
@@ -81,22 +84,22 @@ export default class EventsRepositoryPocketBase extends IEventsRepository {
 
     async saveEvent(event: Event): Promise<Event> {
         const authUserId = pb.authStore.record?.id;
-
+        const clean = sanitize({event});
         if (!authUserId) {
             throw new Error("Utilisateur non connecté");
         }
         try {
-            const tagIds = await this.resolveTags(event.tags);
-            const locationId = await this.resolveLocation(event.address);
+            const tagIds = await this.resolveTags(clean.event.tags);
+            const locationId = await this.resolveLocation(clean.event.address);
             const teamId = await this.resolveTeam(authUserId);
             const data = new FormData();
 
-            data.append("title", event.title);
-            data.append("description", event.description);
-            data.append("size", String(event.size));
-            data.append("startAt", event.startAt.toISOString());
-            data.append("endAt", event.endAt.toISOString());
-            data.append("price", String(event.price));
+            data.append("title", clean.event.title);
+            data.append("description", clean.event.description);
+            data.append("size", String(clean.event.size));
+            data.append("startAt", clean.event.startAt.toISOString());
+            data.append("endAt", clean.event.endAt.toISOString());
+            data.append("price", String(clean.event.price));
             data.append("ownerId", authUserId);
             data.append("locations", locationId);
             data.append("team", teamId);
@@ -113,9 +116,9 @@ export default class EventsRepositoryPocketBase extends IEventsRepository {
                     data.append("image", blob);
                 } else {
                     data.append("image", {
-                        uri: event.image,
+                        uri: clean.event.image,
                         type: "image/jpeg",
-                        name: event.image.split("/").pop() || "image.jpg",
+                        name: clean.event.image.split("/").pop() || "image.jpg",
                     } as any);
                 }
             }

@@ -1,6 +1,7 @@
 import {injectable} from "inversify";
 import ILocationRepository from "../../domain/repository/ILocationRepository";
 import {Location} from "../../types/ScreenType";
+import {sanitize} from "../utils";
 
 const apiKey = "pk.eyJ1IjoidGhvbWFzaGVsbW9iZSIsImEiOiJjbXAzeDJqN2EwY2lqMnNzY3R0eDgyb21mIn0.aqEAoj500bLhO6AEvVFG6w";
 
@@ -11,16 +12,16 @@ export default class LocationRepositoryMapBox extends ILocationRepository {
             if (!location || location.length < 5) {
                 return [];
             }
+            const clean = sanitize(location)
 
             const res = await fetch(
                 `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-                    location
+                    clean
                 )}.json?access_token=${apiKey}&autocomplete=true&limit=5&language=fr`
             );
 
             const data = await res.json();
 
-            console.log(data);
             if (!data.features) {
                 return [];
             }
