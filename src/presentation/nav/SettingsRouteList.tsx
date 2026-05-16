@@ -65,7 +65,7 @@ const AdminNavigations: SettingType[] = [
     },
     {
         title: "Vérifier des tickets",
-        redirection: "VerifyTicket",
+        redirection: "VerifyEvent",
         color: colors.blue
     },
     {

@@ -89,6 +89,7 @@ export default class EventsRepositoryPocketBase extends IEventsRepository {
             const tagIds = await this.resolveTags(event.tags);
             const locationId = await this.resolveLocation(event.address);
 
+            const team = await pb.collection("team").getFirstListItem(`owner = "${authUserId}"`);
             const data = new FormData();
 
             data.append("title", event.title);
@@ -99,6 +100,7 @@ export default class EventsRepositoryPocketBase extends IEventsRepository {
             data.append("price", String(event.price));
             data.append("ownerId", authUserId);
             data.append("locations", locationId);
+            data.append("team", team.id);
 
             tagIds.forEach(tagId => {
                 data.append("tags", tagId);

@@ -18,6 +18,9 @@ import LocationRepositoryMapBox from "./src/infrastructure/repository/LocationRe
 import ILocationRepository from "./src/domain/repository/ILocationRepository";
 import {LocationFinder} from "./src/domain/core/services/LocationFinder";
 import UpdateEvent from "./src/application/usecase/UpdateEvent";
+import IReservationRepository from "./src/domain/repository/IReservationRepository";
+import ReservationRepositoryPocketBase from "./src/infrastructure/repository/ReservationRepositoryPocketBase";
+import VerifyTickets from "./src/application/usecase/VerifyTickets";
 
 
 const container = new Container({defaultScope: "Singleton"});
@@ -27,7 +30,7 @@ container.bind(IUserRepository).to(UserRepositoryPocketBase);
 container.bind(IEventsRepository).to(EventsRepositoryPocketBase);
 container.bind(ITagRepository).to(TagRepositoryPocketBase);
 container.bind(ILocationRepository).to(LocationRepositoryMapBox);
-
+container.bind(IReservationRepository).to(ReservationRepositoryPocketBase);
 
 // services
 container.bind(TagManager).toSelf();
@@ -42,5 +45,6 @@ container.bind(GetAvaiblesEvents).toSelf();
 container.bind(CreateNewEvent).toSelf();
 container.bind(GetOwnerEvents).toSelf();
 container.bind(UpdateEvent).toSelf();
+container.bind(VerifyTickets).toSelf();
 
 export {container};

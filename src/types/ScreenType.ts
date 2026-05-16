@@ -1,4 +1,5 @@
 import {RootStackParamList} from "./RootStackParamList";
+import {Reservation} from "../domain/core/Reservation";
 
 export type SettingType = {
     title: string;
@@ -18,4 +19,11 @@ export type Location = {
 export type ValidationError = {
     field: string;
     message: string;
+};
+export type TicketError = "not_found" | "already_scanned" | "error";
+
+export type VerifyResult = | { ok: true; reservation: Reservation } | {
+    ok: false;
+    reason: TicketError;
+    reservation?: Reservation;
 };

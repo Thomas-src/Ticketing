@@ -8,7 +8,7 @@ import {getUserNavParameters} from "../nav/SettingsRouteList"
 import {SettingType} from "../../types/ScreenType";
 import AuthRepositoryPocketBase from "../../infrastructure/repository/AuthRepositoryPocketBase";
 
-const authRepository = new AuthRepositoryPocketBase(); // todo injecter
+const authRepository = new AuthRepositoryPocketBase();
 type Props = { navigation: NativeStackNavigationProp<RootStackParamList>; };
 
 export default function Settings({navigation}: Props) {
@@ -18,7 +18,7 @@ export default function Settings({navigation}: Props) {
             await authRepository.logout();
             navigation.reset({index: 0, routes: [{name: 'Login'}]})
         } else {
-            navigation.navigate(setting.redirection as any); // todo fix any
+            navigation.navigate(setting.redirection as any);
         }
     };
 
