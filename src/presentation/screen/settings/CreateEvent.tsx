@@ -348,7 +348,6 @@ export default function CreateEvent({navigation}: Props) {
                             onSelect={(place: Location) => {
                                 setAddress(place.address);
                                 setCity(place.city ?? '');
-                                setAddressName(place.name);
                                 clearError('address');
                             }}
                         />

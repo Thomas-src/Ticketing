@@ -88,8 +88,7 @@ export default class EventsRepositoryPocketBase extends IEventsRepository {
         try {
             const tagIds = await this.resolveTags(event.tags);
             const locationId = await this.resolveLocation(event.address);
-
-            const team = await pb.collection("team").getFirstListItem(`owner = "${authUserId}"`);
+            const teamId = await this.resolveTeam(authUserId);
             const data = new FormData();
 
             data.append("title", event.title);
@@ -100,7 +99,7 @@ export default class EventsRepositoryPocketBase extends IEventsRepository {
             data.append("price", String(event.price));
             data.append("ownerId", authUserId);
             data.append("locations", locationId);
-            data.append("team", team.id);
+            data.append("team", teamId);
 
             tagIds.forEach(tagId => {
                 data.append("tags", tagId);
@@ -171,6 +170,23 @@ export default class EventsRepositoryPocketBase extends IEventsRepository {
                     name: address.name,
                     address: address.address,
                     city: address.city,
+                });
+
+            return created.id;
+        }
+    }
+
+    private async resolveTeam(userId: string) {
+        try {
+
+            const existing = await pb.collection("team").getFirstListItem(`owner = "${userId}"`);
+
+            return existing.id;
+        } catch {
+            const created = await pb
+                .collection("team")
+                .create({
+                    owner: userId,
                 });
 
             return created.id;
