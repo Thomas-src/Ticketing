@@ -94,6 +94,12 @@ export const styles = StyleSheet.create({
         paddingTop: 16,
         paddingHorizontal: 16,
     },
+    fixedcontainer: {
+        flex: 1,
+        backgroundColor: '#0d0d1a',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+    },
     tabBarItemStyle: {
         flex: 1,
         alignItems: 'center',

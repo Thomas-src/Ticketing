@@ -2,12 +2,34 @@ import {Address} from "../../domain/core/Address";
 import {Tag} from "../../domain/core/Tag";
 import {Event} from "../../domain/core/Event";
 import {pb} from "../pocketbaseClient";
+import {Reservation} from "../../domain/core/Reservation";
+import User from "../../domain/core/User";
 
 export function toAddress(r: Address): Address {
     return new Address(
         r.name ?? "",
         r.address ?? "",
         r.city ?? "",
+    );
+}
+
+export function toReservation(r: any): Reservation {
+    return new Reservation(
+        toUser(r.expand?.members ?? {}),
+        r.quantity ?? 0,
+        mapEvent(r.expand?.events ?? {}),
+        r.guests ?? [],
+        r.token ?? "",
+        r.scanned ?? false,
+    );
+}
+
+export function toUser(r: any): User {
+    return new User(
+        r.name ?? "",
+        r.surname ?? "",
+        r.email ?? "",
+        r.role ?? "user",
     );
 }
 

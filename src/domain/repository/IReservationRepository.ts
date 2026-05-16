@@ -1,3 +1,5 @@
+import {Reservation} from "../core/Reservation";
+
 export default abstract class IReservationRepository {
-    abstract verifyTicket(eventId: string, token: string): Promise<boolean>;
+    abstract verifyTicket(eventId: string, token: string): Promise<Reservation | null>;
 }

@@ -1,16 +1,13 @@
 import {useCallback, useRef, useState} from "react";
 import VerifyTickets from "../../application/usecase/VerifyTickets";
 import {useInjection} from "./ioc.react";
+import {VerifyResult} from "../../types/ScreenType";
 
-type ScanResult = null | {
-    ok: boolean;
-    message: string;
-};
 
 export function useQrScanner(eventId: string) {
     const verifyTicketUseCase = useInjection<VerifyTickets>(VerifyTickets);
 
-    const [result, setResult] = useState<ScanResult>(null);
+    const [result, setResult] = useState<VerifyResult | null>(null);
     const scanningLock = useRef(false);
 
     const handleBarcodeScanned = useCallback(
@@ -22,14 +19,11 @@ export function useQrScanner(eventId: string) {
             try {
                 const res = await verifyTicketUseCase.execute(eventId, data);
 
-                setResult({
-                    ok: res,
-                    message: res ? "Ticket valide ✅" : "Ticket invalide ❌",
-                });
+                setResult(res);
             } catch {
                 setResult({
                     ok: false,
-                    message: "Erreur de vérification ❌",
+                    reason: "error",
                 });
             }
         },
