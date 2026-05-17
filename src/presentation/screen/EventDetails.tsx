@@ -113,7 +113,7 @@ export default function EventDetails({route}: Props) {
                 name={actualEvent?.title}
                 description={actualEvent?.description}
                 tags={actualEvent?.tags?.map(t => t.name) ?? []}
-                seatsLeft={actualEvent?.size}
+                seatsLeft={actualEvent?.sizeLeft}
                 image={actualEvent?.image}
                 price={actualEvent?.price}
             />

@@ -28,4 +28,27 @@ export default class ReservationRepositoryPocketBase extends IReservationReposit
             return null;
         }
     }
+
+    async getReservationsForEvent(eventId: string): Promise<Reservation[]> {
+
+        const clean = sanitize({ eventId });
+
+        try {
+            const reservations = await pb
+                .collection(collectionName)
+                .getFullList({
+                    filter: `events ~ "${clean.eventId}"`,
+                    expand: 'members,events,events.locations,events.tags'
+                });
+
+            return reservations.map(r => toReservation(r));
+        } catch (e) {
+            console.error(e);
+            return [];
+        }
+    }
+
+    async saveReservation(reservation: Reservation): Promise<void> {
+        throw new Error("Not yet implemented.");
+    }
 }

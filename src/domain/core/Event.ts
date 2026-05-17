@@ -6,6 +6,7 @@ export class Event {
     readonly #id: string;
     readonly #description: string;
     readonly #size: number;
+    protected _sizeLeft : number;
     readonly #startAt: Date;
     readonly #endAt: Date;
     readonly #image: string;
@@ -18,6 +19,7 @@ export class Event {
         this.#title = title;
         this.#description = description;
         this.#size = size;
+        this._sizeLeft = size;
         this.#startAt = startAt;
         this.#endAt = endAt;
         this.#image = image;
@@ -40,6 +42,14 @@ export class Event {
 
     get size(): number {
         return this.#size;
+    }
+
+    set sizeLeft(value: number) {
+        this._sizeLeft = value;
+    }
+
+    get sizeLeft(): number {
+        return this._sizeLeft;
     }
 
     get startAt(): Date {

@@ -34,7 +34,7 @@ export default function ReservationStep3(props: Props) {
 
     // Enregistrer la reservation, si aucun crash alors on va vers la page succes, sinon fail
     const nextPage = () => {
-        props.onFail()
+        props.onSucces()
     }
 
     return (
