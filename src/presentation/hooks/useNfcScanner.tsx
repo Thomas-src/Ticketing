@@ -1,14 +1,23 @@
 import {useCallback, useRef, useState} from 'react';
 import {Vibration} from 'react-native';
-import NfcManager, {NfcTech, TagEvent} from 'react-native-nfc-manager';
-import VerifyTickets from '../../application/usecase/VerifyTickets';
-import {useInjection} from './ioc.react';
 import {VerifyResult} from "../../types/ScreenType";
+import {useInjection} from './ioc.react';
+import VerifyTickets from '../../application/usecase/VerifyTickets';
 
+// Import conditionnel du NFC
+let NfcManager: any = null;
+let NfcTech: any = null;
+try {
+    const nfc = require('react-native-nfc-manager');
+    NfcManager = nfc.default;
+    NfcTech = nfc.NfcTech;
+} catch (e) {
+    console.warn('[NFC] react-native-nfc-manager non disponible dans cet environnement');
+}
 
 export type NfcStatus = 'idle' | 'scanning' | 'unsupported';
 
-const NFC_TECHNOLOGIES = [NfcTech.Ndef, NfcTech.NfcA];
+const NFC_TECHNOLOGIES = NfcTech ? [NfcTech.Ndef, NfcTech.NfcA] : [];
 
 function decodeNdefTextPayload(payload: number[]): string {
     const langCodeLength = payload[0] & 0x3f;
@@ -20,15 +29,23 @@ export function useNfcScanner(eventId: string) {
     const verifyTicketUseCase = useInjection<VerifyTickets>(VerifyTickets);
 
     const [result, setResult] = useState<VerifyResult | null>(null);
-    const [nfcStatus, setNfcStatus] = useState<NfcStatus>('idle');
+    const [nfcStatus, setNfcStatus] = useState<NfcStatus>(
+        NfcManager ? 'idle' : 'unsupported'
+    );
 
     const scanningLock = useRef(false);
 
     const scan = useCallback(async () => {
+        // NFC non disponible dans Expo Go
+        if (!NfcManager) {
+            console.warn('[NFC] Non disponible dans Expo Go');
+            return;
+        }
+
         if (scanningLock.current) return;
 
         setNfcStatus('scanning');
-        let tag: TagEvent | null = null;
+        let tag: any | null = null;
 
         for (const tech of NFC_TECHNOLOGIES) {
             try {
@@ -43,8 +60,7 @@ export function useNfcScanner(eventId: string) {
             } catch (e: any) {
                 console.log('[NFC] tech failed:', tech, e?.message ?? e);
             } finally {
-                await NfcManager.cancelTechnologyRequest().catch(() => {
-                });
+                await NfcManager.cancelTechnologyRequest().catch(() => {});
             }
         }
 
@@ -80,9 +96,10 @@ export function useNfcScanner(eventId: string) {
     }, []);
 
     const cancel = useCallback(async () => {
-        await NfcManager.cancelTechnologyRequest().catch(() => {
-        });
+        if (!NfcManager) return;
+        await NfcManager.cancelTechnologyRequest().catch(() => {});
         setNfcStatus('idle');
     }, []);
+
     return {result, nfcStatus, scan, cancel, resetScan};
 }

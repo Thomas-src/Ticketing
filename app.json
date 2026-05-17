@@ -13,7 +13,11 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.ticket",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -22,56 +26,44 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.anonymous.ticket"
+      "package": "com.anonymous.ticket",
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.NFC",
+        "android.permission.CAMERA"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "@react-native-community/datetimepicker",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "L'application a besoin d'accéder à vos photos pour créer des évènements."
+        }
+      ],
+      [
+        "react-native-nfc-manager",
+        {
+          "nfcPermissionAndroid": "L'application a besoin d'utiliser la NFC pour lire des tags."
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "barcodeScannerEnabled": true
+        }
+      ]
     ],
     "extra": {
       "eas": {
-        "projectId": "d75d5ac2-16ff-4bba-9a9b-d2a7a5fff9f3"
+        "projectId": "b39d7559-f248-4d3e-9b50-a97675fd6ccf"
       }
     }
-  },
-  "plugins": [
-    [
-      "expo-image-picker",
-      {
-        "photosPermission": "L'application a besoin d'accéder à vos photos pour créer des évènements.",
-        "colors": {
-          "cropToolbarColor": "#000000"
-        },
-        "dark": {
-          "colors": {
-            "cropToolbarColor": "#000000"
-          }
-        }
-      }
-    ],
-    [
-      "react-native-nfc-manager",
-      {
-        "nfcPermissionAndroid": "L'application a besoin d'utiliser la NFC pour lire des tags."
-      }
-    ],
-    [
-      "expo-secure-store",
-      {
-        "configureAndroidBackup": true,
-        "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face IDbiometric data."
-      }
-    ],
-    [
-      "expo-camera",
-      {
-        "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-        "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
-        "barcodeScannerEnabled": true
-      }
-    ]
-  ]
+  }
 }
