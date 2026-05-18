@@ -1,14 +1,14 @@
 import {useState} from 'react';
 import {Button, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../../types/RootStackParamList';
+import {AccountStackParamList} from '../../../types/RootStackParamList';
 import {CameraView, useCameraPermissions} from 'expo-camera';
 import {useQrScanner} from '../../hooks/useQrScanner';
 import {useNfcScanner} from '../../hooks/useNfcScanner';
 import {VerifyResult} from '../../../types/ScreenType';
 import {colors} from '../../colors';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'VerifyTicket'>;
+type Props = NativeStackScreenProps<AccountStackParamList, 'VerifyTicket'>;
 
 type ScanMode = null | 'qr' | 'nfc';
 

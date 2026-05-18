@@ -1,14 +1,14 @@
 import {FlatList, Text, View} from 'react-native';
 import {styles} from '../../styles';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../../../types/RootStackParamList';
+import {AccountStackParamList} from '../../../types/RootStackParamList';
 import {useInjection} from "../../hooks/ioc.react";
 import {useEffect, useRef, useState} from "react";
 import {Event} from "../../../domain/core/Event";
 import EventCard from "../../components/EventCard";
 import GetOwnerEvents from "../../../application/usecase/GetOwnerEvents"
 
-type Props = NativeStackScreenProps<RootStackParamList>;
+type Props = NativeStackScreenProps<AccountStackParamList>;
 
 
 export default function ManageEvent({navigation}: Props) {

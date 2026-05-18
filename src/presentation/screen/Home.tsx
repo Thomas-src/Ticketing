@@ -4,7 +4,7 @@ import EventCard from "../components/EventCard";
 import {useAuth} from "../context/AuthContext";
 import GetAvaiblesEvents from "../../application/usecase/GetAvaiblesEvents";
 import {Event} from "../../domain/core/Event";
-import {useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useRef, useState} from "react";
 import {useInjection} from "../hooks/ioc.react";
 import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
@@ -27,7 +27,7 @@ export default function Home() {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
-    const loadEvents = async (isRefresh = false) => {
+    const loadEvents = useCallback(async (isRefresh = false) => {
         try {
             if (isRefresh) setRefreshing(true);
             else setLoading(true);
@@ -42,7 +42,15 @@ export default function Home() {
             setLoading(false);
             setRefreshing(false);
         }
-    };
+    }, [avaiblesEvents, date]);
+
+    const handleRefresh = useCallback(() => {
+        loadEvents(true);
+    }, [loadEvents]);
+
+    const navigateToDetails = useCallback((eventId: string) => {
+        navigation.navigate("Details", {eventId});
+    }, [navigation]);
 
     useEffect(() => {
         loadEvents();
@@ -71,13 +79,11 @@ export default function Home() {
                 data={events}
                 keyExtractor={(item: Event) => item.id}
                 renderItem={({item}) => (
-                    <EventCard event={item} actionName="Réserver" action={() => navigation.navigate("Details", {
-                        eventId: item.id
-                    })}/>
+                    <EventCard event={item} actionName="Réserver" action={() => navigateToDetails(item.id)}/>
                 )}
                 contentContainerStyle={{gap: 12}}
                 refreshing={loading}
-                onRefresh={() => loadEvents(true)}
+                onRefresh={() => handleRefresh()}
             />
         </View>
     );

@@ -166,7 +166,12 @@ export default function EditEvent({navigation, route}: Props) {
 
         try {
             const updated = await updateEvent.execute(eventId, event);
-            navigation.navigate("Details", {eventId: eventId});
+            if (updated) {
+                navigation.navigate("Details", {eventId: eventId});
+            } else {
+
+            }
+
         } catch (error) {
             console.error(error);
             setErrors([{field: "none", message: "Une erreur s'est produite, veuillez réessayer."}]);

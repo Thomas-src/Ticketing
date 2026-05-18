@@ -28,4 +28,8 @@ export default class User {
     get surname(): string {
         return this.#surname;
     }
+
+    get fullname(): string {
+        return this.#name + " " + this.#surname;
+    }
 }

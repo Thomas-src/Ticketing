@@ -1,5 +1,5 @@
 import {Modal, Pressable, Share, StyleSheet, Text, View} from 'react-native';
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 
 import ContextDetailsCard from "../components/eventDetails/ContextDetailsCard";
 import ContextWhenCard from "../components/eventDetails/ContextWhenCard";
@@ -11,19 +11,17 @@ import ReservationStep3 from "../components/reservation/ReservationStep3";
 import {styles} from '../styles';
 import {colors} from "../colors";
 import {Share2} from 'lucide-react-native';
-import {NativeStackNavigationProp, NativeStackScreenProps} from '@react-navigation/native-stack';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types/RootStackParamList';
 
 import DisplayEventDetails from "../../application/usecase/DisplayEventDetails";
 import {Event} from "../../domain/core/Event";
-import {useNavigation} from "@react-navigation/native";
 import {useInjection} from "../hooks/ioc.react";
 import ReservationSucces from "../components/reservation/ReservationSucces";
 import ReservationFail from "../components/reservation/ReservationFail";
 import {useAuth} from "../context/AuthContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Details">;
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 export default function EventDetails({route, navigation}: Props) {
     const displayEvent = useInjection<DisplayEventDetails>(DisplayEventDetails);
@@ -39,53 +37,22 @@ export default function EventDetails({route, navigation}: Props) {
 
     const {user} = useAuth();
 
-    const isAuthenticated = () => {
-        if (user?.name != null) {
-            return true;
-        }
-        return false;
-    };
-
-    const reservationRedirect = () => {
-        if (isAuthenticated()) {
+    const reservationRedirect = useCallback(() => {
+        if (user) {
             setModalVisible(true);
         } else {
-            navigation.navigate("Login"); // TODO FIX LA REDIRECTION
+            navigation.navigate("Mon compte", {screen: "Login"});
         }
-    };
+    }, [user, navigation]);
 
-    const resetModal = () => {
+    const resetModal = useCallback(() => {
         setModalVisible(false);
         setStep(1);
         setNames([]);
         setCount(0);
-    };
+    }, []);
 
-    useEffect(() => {
-        const fetchEvent = async () => {
-            try {
-                const event = await displayEvent.execute(eventId);
-                console.log("Affichage des détails de : " + event?.title)
-                if (!event) {
-                    navigation.goBack()
-                } else {
-                    setActualEvent(event);
-                }
-            } catch (error) {
-                console.error("Erreur lors du chargement de l'event :", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchEvent();
-    }, [eventId]);
-
-    if (!actualEvent) {
-        return;
-    }
-
-    const shareEvent = async () => {
+    const shareEvent = useCallback(async () => {
         if (!actualEvent) return;
         const startDate = new Date(actualEvent.startAt);
 
@@ -113,7 +80,32 @@ export default function EventDetails({route, navigation}: Props) {
         } catch (error) {
             console.error("Erreur lors du partage :", error);
         }
-    };
+    }, [actualEvent]);
+
+    useEffect(() => {
+        const fetchEvent = async () => {
+            try {
+                const event = await displayEvent.execute(eventId);
+                console.log("Affichage des détails de : " + event?.title)
+                if (!event) {
+                    navigation.goBack()
+                } else {
+                    setActualEvent(event);
+                }
+            } catch (error) {
+                console.error("Erreur lors du chargement de l'event :", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchEvent();
+    }, [eventId]);
+
+    if (!actualEvent) {
+        return;
+    }
+
 
     if (loading) {
         return (

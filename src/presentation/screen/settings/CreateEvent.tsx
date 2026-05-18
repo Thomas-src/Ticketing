@@ -18,7 +18,7 @@ import {Address} from "../../../domain/core/Address";
 import {Event} from "../../../domain/core/Event";
 import {Tag} from "../../../domain/core/Tag";
 import {useFocusEffect} from "@react-navigation/core";
-
+// todo dossier settings à modifier
 type Props = NativeStackScreenProps<RootStackParamList>;
 
 type EventForm = {

@@ -1,4 +1,4 @@
-import {createContext, useContext, useEffect, useState} from "react";
+import {createContext, useContext, useEffect, useMemo, useState} from "react";
 import AuthRepositoryPocketBase from "../../infrastructure/repository/AuthRepositoryPocketBase";
 import User from "../../domain/core/User";
 import {pb} from "../../infrastructure/pocketbaseClient";
@@ -14,12 +14,13 @@ export function AuthProvider({children}: any) {
         const unsub = pb.authStore.onChange(() => {
             setUser(authRepo.getCurrentUser());
         });
-
         return () => unsub();
     }, []);
 
+    const value = useMemo(() => ({user}), [user]);
+
     return (
-        <AuthContext.Provider value={{user}}>
+        <AuthContext.Provider value={value}>
             {children}
         </AuthContext.Provider>
     );
