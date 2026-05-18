@@ -11,9 +11,62 @@ import {sanitize} from "../utils";
 const collectionName = "events";
 @injectable()
 export default class EventsRepositoryPocketBase extends IEventsRepository {
-    updateEvent(id: string, event: Event): Promise<boolean> {
+    async updateEvent(id: string, event: Event): Promise<boolean> {
+        const authUserId = pb.authStore.record?.id;
+
+        if (!authUserId) {
+            throw new Error("Utilisateur non connecté");
+        }
+
         const clean = sanitize({id, event});
-        throw new Error("Method not implemented.");
+
+        try {
+            // Vérification ownership
+            const existing = await pb.collection(collectionName).getOne(clean.id);
+
+            if (existing.ownerId !== authUserId) {
+                throw new Error("Vous n'êtes pas autorisé à modifier cet événement");
+            }
+
+            const tagIds = await this.resolveTags(clean.event.tags);
+            const locationId = await this.resolveLocation(clean.event.address);
+
+            const data = new FormData();
+
+            data.append("title", clean.event.title);
+            data.append("description", clean.event.description);
+            data.append("size", String(clean.event.size));
+            data.append("startAt", clean.event.startAt.toISOString());
+            data.append("endAt", clean.event.endAt.toISOString());
+            data.append("price", String(clean.event.price));
+            data.append("locations", locationId);
+
+            data.append("tags", "");
+            tagIds.forEach(tagId => {
+                data.append("tags", tagId);
+            });
+
+            if (event.image) {
+                if (Platform.OS === "web") {
+                    const req = await fetch(event.image);
+                    const blob = await req.blob();
+                    data.append("image", blob);
+                } else {
+                    data.append("image", {
+                        uri: clean.event.image,
+                        type: "image/jpeg",
+                        name: clean.event.image.split("/").pop() || "image.jpg",
+                    } as any);
+                }
+            }
+
+            await pb.collection(collectionName).update(clean.id, data);
+
+            return true;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
     }
 
     async findOwnerEvents(): Promise<Event[]> {
