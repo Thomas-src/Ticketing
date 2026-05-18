@@ -37,7 +37,6 @@ export default class UserRepositoryPocketBase extends IUserRepository {
             });
 
             await pb.collection(collectionName).authWithPassword(user.email, password);
-            console.log("Saved user :" + user.email);
         } catch (error: any) {
             const pbError = error as PocketBaseClientError;
             if (pbError.response?.status === 400) {

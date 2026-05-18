@@ -8,18 +8,41 @@ import {sanitize} from "../utils";
 const collectionName = "reservations";
 @injectable()
 export default class ReservationRepositoryPocketBase extends IReservationRepository {
+    async getUserTickets(): Promise<Reservation[] | null> {
+        const authUserId = pb.authStore.record?.id;
+        if (!authUserId) return null;
+
+        try {
+            const reservations = await pb
+                .collection(collectionName)
+                .getFullList({
+                    filter: `members = "${authUserId}"`,
+                    expand: 'members,events,events.locations,events.tags'
+                });
+
+            return reservations.map(r => toReservation(r));
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
+    }
+
     async verifyTicket(eventId: string, token: string): Promise<Reservation | null> {
         const clean = sanitize({eventId, token})
         try {
             const reservation = await pb
                 .collection(collectionName)
                 .getFirstListItem(
-                    `token = "${clean.token}" && events ~ "${clean.eventId}"`,
+                    `token = "${clean.token}" && events = "${clean.eventId}"`,
                     {expand: 'members,events,events.locations,events.tags'}
                 );
             const alreadyScanned = reservation.scanned;
             if (!reservation.scanned) {
-                await pb.collection(collectionName).update(reservation.id, {scanned: true});
+                try {
+                    await pb.collection(collectionName).update(reservation.id, {scanned: true});
+                } catch (updateErr) {
+                    console.warn("Could not update the ticket — permission issue?", updateErr);
+                }
             }
 
             return toReservation({...reservation, scanned: alreadyScanned});
@@ -30,8 +53,7 @@ export default class ReservationRepositoryPocketBase extends IReservationReposit
     }
 
     async getReservationsForEvent(eventId: string): Promise<Reservation[]> {
-
-        const clean = sanitize({ eventId });
+        const clean = sanitize({eventId});
 
         try {
             const reservations = await pb

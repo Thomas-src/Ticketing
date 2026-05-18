@@ -48,5 +48,6 @@ container.bind(GetOwnerEvents).toSelf();
 container.bind(UpdateEvent).toSelf();
 container.bind(VerifyTickets).toSelf();
 container.bind(SaveReservation).toSelf();
+container.bind(UserTickets).toSelf();
 
 export {container};
