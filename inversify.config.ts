@@ -22,6 +22,7 @@ import IReservationRepository from "./src/domain/repository/IReservationReposito
 import ReservationRepositoryPocketBase from "./src/infrastructure/repository/ReservationRepositoryPocketBase";
 import VerifyTickets from "./src/application/usecase/VerifyTickets";
 import SaveReservation from "./src/application/usecase/SaveReservation";
+import UserTickets from "./src/application/usecase/UserTickets";
 
 
 const container = new Container({defaultScope: "Singleton"});
