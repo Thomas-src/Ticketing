@@ -14,12 +14,16 @@ export default class ReservationRepositoryPocketBase extends IReservationReposit
             const reservation = await pb
                 .collection(collectionName)
                 .getFirstListItem(
-                    `token = "${clean.token}" && events ~ "${clean.eventId}"`,
+                    `token = "${clean.token}" && events = "${clean.eventId}"`,
                     {expand: 'members,events,events.locations,events.tags'}
                 );
             const alreadyScanned = reservation.scanned;
             if (!reservation.scanned) {
-                await pb.collection(collectionName).update(reservation.id, {scanned: true});
+                try {
+                    await pb.collection(collectionName).update(reservation.id, {scanned: true});
+                } catch (updateErr) {
+                    console.warn("Could not update the ticket — permission issue?", updateErr);
+                }
             }
 
             return toReservation({...reservation, scanned: alreadyScanned});
@@ -31,7 +35,7 @@ export default class ReservationRepositoryPocketBase extends IReservationReposit
 
     async getReservationsForEvent(eventId: string): Promise<Reservation[]> {
 
-        const clean = sanitize({ eventId });
+        const clean = sanitize({eventId});
 
         try {
             const reservations = await pb

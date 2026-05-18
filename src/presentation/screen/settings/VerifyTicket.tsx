@@ -82,12 +82,11 @@ function CameraScanner({onBarcodeScanned,}: { onBarcodeScanned: (e: { data: stri
 export default function VerifyTicket({route}: Props) {
     const {eventId} = route.params;
     const [mode, setMode] = useState<ScanMode>(null);
-
     const {result: qrResult, handleBarcodeScanned, resetScan: resetQr} = useQrScanner(eventId);
 
-    const {result: nfcResult, nfcStatus, scan, cancel: cancelNfc, resetScan: resetNfc} = useNfcScanner(eventId);
+    const {result: nfacResult, nfcStatus, scan, cancel: cancelNfc, resetScan: resetNfc} = useNfcScanner(eventId);
 
-    const result = qrResult ?? nfcResult;
+    const result = qrResult ?? nfacResult;
 
     const resetScan = () => {
         resetQr();
