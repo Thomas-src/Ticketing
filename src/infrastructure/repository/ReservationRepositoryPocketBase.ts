@@ -78,14 +78,14 @@ export default class ReservationRepositoryPocketBase extends IReservationReposit
         }
 
         try {
-            const data = new FormData();
-
-            data.append("members", authUserId);
-            data.append("quantity", String(reservation.quantity));
-            data.append("events", reservation.event.id);
-            data.append("guests", JSON.stringify(reservation.guests));
-            data.append("token", reservation.token);
-            data.append("scanned", "false");
+            await pb.collection(collectionName).create({
+                members: authUserId,
+                quantity: reservation.quantity,
+                events: reservation.event.id,
+                guests: reservation.guests,
+                token: reservation.token,
+                scanned: false,
+            });
 
         } catch (error) {
             console.error(error);

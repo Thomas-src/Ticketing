@@ -51,18 +51,11 @@ export default function ReservationStep3(props: Props) {
 
     // Enregistrer la reservation, si aucun crash alors on va vers la page succes, sinon fail
     const nextPage = async () => {
-        const guests = props.names;
-        props.names.shift();
-
+        const guests = [...props.names]; // copie indépendante
+        const quantity = guests.length;
         const token = uuid();
 
-        const reservation = new Reservation(user, props.names.length, props.event, guests, token, false );
-
-        // console.log("Reservation : ");
-        // console.log(reservation.event.title);
-        // console.log(reservation.guests);
-        // console.log(reservation.quantity);
-        // console.log(reservation.owner)
+        const reservation = new Reservation(user, quantity, props.event, guests, token, false);
 
         try {
             await saveReservationUC.execute(reservation);

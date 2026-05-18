@@ -30,8 +30,6 @@ export default class SaveReservation {
             throw new Error("Erreur");
         }
 
-        throw new Error("Not yet implemented.");
-
     }
 
 }
