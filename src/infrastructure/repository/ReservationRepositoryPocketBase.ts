@@ -8,6 +8,25 @@ import {sanitize} from "../utils";
 const collectionName = "reservations";
 @injectable()
 export default class ReservationRepositoryPocketBase extends IReservationRepository {
+    async getUserTickets(): Promise<Reservation[] | null> {
+        const authUserId = pb.authStore.record?.id;
+        if (!authUserId) return null;
+
+        try {
+            const reservations = await pb
+                .collection(collectionName)
+                .getFullList({
+                    filter: `members = "${authUserId}"`,
+                    expand: 'members,events,events.locations,events.tags'
+                });
+
+            return reservations.map(r => toReservation(r));
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
+    }
+
     async verifyTicket(eventId: string, token: string): Promise<Reservation | null> {
         const clean = sanitize({eventId, token})
         try {
@@ -34,7 +53,6 @@ export default class ReservationRepositoryPocketBase extends IReservationReposit
     }
 
     async getReservationsForEvent(eventId: string): Promise<Reservation[]> {
-
         const clean = sanitize({eventId});
 
         try {
