@@ -2,6 +2,12 @@ import {Event} from "../../../domain/core/Event"
 import {FlatList, Pressable, StyleSheet, Text, TextInput, View} from "react-native";
 import {colors} from "../../colors";
 import {useState} from "react";
+import {useInjection} from "../../hooks/ioc.react";
+import SaveReservation from "../../../application/usecase/SaveReservation";
+import {Reservation} from "../../../domain/core/Reservation";
+import {useAuth} from "../../context/AuthContext";
+import 'react-native-get-random-values';
+import {v4 as uuid} from "uuid";
 
 type Props = {
     event: Event;
@@ -13,10 +19,21 @@ type Props = {
 };
 
 export default function ReservationStep3(props: Props) {
+    const saveReservationUC = useInjection<SaveReservation>(SaveReservation);
+
     const [iban, setIban] = useState("BE");
     const [expirationMonth, setExpirationMonth] = useState("");
     const [expirationYear, setExpirationYear] = useState("");
     const [cvc, setCvc] = useState("");
+
+    const {user} = useAuth();
+
+    // console.log(props.names.length)
+    //
+    // for (let current of props.names) {
+    //     console.log("====")
+    //     console.log(current.toString());
+    // }
 
     const formCorrect = () => {
         const ibanRegex = /^BE\d{14}$/;
@@ -33,8 +50,28 @@ export default function ReservationStep3(props: Props) {
     };
 
     // Enregistrer la reservation, si aucun crash alors on va vers la page succes, sinon fail
-    const nextPage = () => {
-        props.onSucces()
+    const nextPage = async () => {
+        const guests = props.names;
+        props.names.shift();
+
+        const token = uuid();
+
+        const reservation = new Reservation(user, props.names.length, props.event, guests, token, false );
+
+        // console.log("Reservation : ");
+        // console.log(reservation.event.title);
+        // console.log(reservation.guests);
+        // console.log(reservation.quantity);
+        // console.log(reservation.owner)
+
+        try {
+            await saveReservationUC.execute(reservation);
+
+            props.onSucces()
+        } catch (error) {
+            props.onFail();
+        }
+
     }
 
     return (
@@ -94,7 +131,7 @@ export default function ReservationStep3(props: Props) {
                     </View>
                 </View>
                 <View style={style.marginAuto}>
-                    <Text style={style.endText}>Total à payer : {props.event.price * 9}</Text>
+                    <Text style={style.endText}>Total à payer : {props.event.price * props.count}</Text>
                 </View>
             </View>
 

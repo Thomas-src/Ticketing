@@ -20,12 +20,12 @@ import {useNavigation} from "@react-navigation/native";
 import {useInjection} from "../hooks/ioc.react";
 import ReservationSucces from "../components/reservation/ReservationSucces";
 import ReservationFail from "../components/reservation/ReservationFail";
+import {useAuth} from "../context/AuthContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Details">;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-export default function EventDetails({route}: Props) {
-    const navigation = useNavigation<NavigationProp>();
+export default function EventDetails({route, navigation}: Props) {
     const displayEvent = useInjection<DisplayEventDetails>(DisplayEventDetails);
 
     const {eventId} = route.params;
@@ -36,6 +36,23 @@ export default function EventDetails({route}: Props) {
     const [step, setStep] = useState(1);
     const [count, setCount] = useState(1); // Le nombre de participant incsrit
     const [names, setNames] = useState<string[]>([]);
+
+    const {user} = useAuth();
+
+    const isAuthenticated = () => {
+        if (user?.name != null) {
+            return true;
+        }
+        return false;
+    };
+
+    const reservationRedirect = () => {
+        if (isAuthenticated()) {
+            setModalVisible(true);
+        } else {
+            navigation.navigate("Login"); // TODO FIX LA REDIRECTION
+        }
+    };
 
     const resetModal = () => {
         setModalVisible(false);
@@ -129,8 +146,8 @@ export default function EventDetails({route}: Props) {
                 <Pressable style={actual.shareButton} onPress={shareEvent}>
                     <Share2 color={colors.white}></Share2>
                 </Pressable>
-                <Pressable style={actual.buttonReservation}>
-                    <Text style={actual.w} onPress={() => setModalVisible(true)}>
+                <Pressable style={actual.buttonReservation} onPress={() => reservationRedirect()}>
+                    <Text style={actual.w}>
                         Réserver
                     </Text>
                 </Pressable>
@@ -150,6 +167,7 @@ export default function EventDetails({route}: Props) {
 
                             {step === 1 && (
                                 <ReservationStep1
+                                    event={actualEvent}
                                     count={count}
                                     onChange={setCount}
                                     onBack={resetModal}

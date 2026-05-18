@@ -21,6 +21,7 @@ import UpdateEvent from "./src/application/usecase/UpdateEvent";
 import IReservationRepository from "./src/domain/repository/IReservationRepository";
 import ReservationRepositoryPocketBase from "./src/infrastructure/repository/ReservationRepositoryPocketBase";
 import VerifyTickets from "./src/application/usecase/VerifyTickets";
+import SaveReservation from "./src/application/usecase/SaveReservation";
 
 
 const container = new Container({defaultScope: "Singleton"});
@@ -46,5 +47,6 @@ container.bind(CreateNewEvent).toSelf();
 container.bind(GetOwnerEvents).toSelf();
 container.bind(UpdateEvent).toSelf();
 container.bind(VerifyTickets).toSelf();
+container.bind(SaveReservation).toSelf();
 
 export {container};

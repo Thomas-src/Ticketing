@@ -3,8 +3,10 @@ import {styles} from '../../styles';
 import {colors} from "../../colors";
 import {Input} from "postcss";
 import {useState} from "react";
+import {Event} from "../../../domain/core/Event"
 
 type Props = {
+    event: Event;
     count: number
     onChange: (count: number) => void;
     onNext: () => void;
@@ -13,11 +15,12 @@ type Props = {
 
 
 export default function ReservationStep1(props: Props) {
-    const [count, setCount] = useState(1);
-    const [inputText, setInputText] = useState("1");
-    const price = 90; // Todo prendre le vrai prix
+    const [count, setCount] = useState(0);
+    const [inputText, setInputText] = useState("0");
 
-    const totalPrice = count * price;
+    const countValid = count > 0;
+
+    const totalPrice = count * props.event.price;
 
 
     return (
@@ -38,21 +41,31 @@ export default function ReservationStep1(props: Props) {
                     value={inputText}
                     onChangeText={(text) => {
                         setInputText(text);
-                        const value = Math.max(1, parseInt(text) || 1);
+                        const value = parseInt(text) || 0;
                         setCount(value);
                         props.onChange(value);
                     }}
                 ></TextInput>
             </View>
             <View style={style.priceContainer}>
-                <Text style={style.textDesign}>{price} € par place</Text>
+                <Text style={style.textDesign}>{props.event.price} € par place</Text>
                 <Text style={style.textDesign}>Total : {totalPrice} € </Text>
             </View>
             <View style={style.buttonsStyles}>
                 <Pressable style={style.backButton} onPress={() => props.onBack()}><Text
                     style={style.ButtonText}>Retour</Text></Pressable>
-                <Pressable style={style.nextButton} onPress={event => props.onNext()}><Text
-                    style={[style.ButtonText, style.w]}>Continuer</Text></Pressable>
+                <Pressable
+                    style={[
+                        style.nextButton,
+                        !countValid && style.nextButtonDisabled
+                    ]}
+                    onPress={() => props.onNext()}
+                    disabled={!countValid}
+                >
+                    <Text style={[style.ButtonText, style.w]}>
+                        Continuer
+                    </Text>
+                </Pressable>
             </View>
         </View>
     )
@@ -119,5 +132,8 @@ const style = StyleSheet.create({
         backgroundColor: colors.blue,
         width: "30%",
         borderRadius: 5,
+    },
+    nextButtonDisabled: {
+        opacity: 0.6,
     }
 });

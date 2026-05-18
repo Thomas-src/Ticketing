@@ -49,6 +49,28 @@ export default class ReservationRepositoryPocketBase extends IReservationReposit
     }
 
     async saveReservation(reservation: Reservation): Promise<void> {
-        throw new Error("Not yet implemented.");
+        const authUserId = pb.authStore.record?.id;
+        const clean = sanitize({reservation});
+        if (!authUserId) {
+            throw new Error("Utilisateur non connecté");
+        }
+
+        try {
+            const data = new FormData();
+
+            data.append("members", authUserId);
+            data.append("quantity", String(reservation.quantity));
+            data.append("events", reservation.event.id);
+            data.append("guests", JSON.stringify(reservation.guests));
+            data.append("token", reservation.token);
+            data.append("scanned", "false");
+
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+
+
+
     }
 }

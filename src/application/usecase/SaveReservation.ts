@@ -10,19 +10,26 @@ export default class SaveReservation {
 
     constructor(@inject(IReservationRepository) private repo: IReservationRepository) {}
 
-    async execute(event: Event, reservation: Reservation): Promise<void> {
-        const allReservation = await this.repo.getReservationsForEvent(event.id);
+    async execute(reservation: Reservation): Promise<void> {
+        console.log(`Execute Reservation: ${reservation.event.title}`);
+
+        const allReservation = await this.repo.getReservationsForEvent(reservation.event.id);
 
         const totalReservations = allReservation.reduce(
             (total, current) => total + current.quantity,
             0
         );
 
-        if (totalReservations >= event.size) {
+        if (totalReservations >= reservation.event.size) {
             throw new FullEventException("L'événement est complet");
         }
 
-        // TODO try ajouter la reservation, si exception alors on retourne exception sinon rien.
+        try {
+            await this.repo.saveReservation(reservation);
+        } catch (error) {
+            throw new Error("Erreur");
+        }
+
         throw new Error("Not yet implemented.");
 
     }

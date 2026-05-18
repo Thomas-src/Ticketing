@@ -1,6 +1,7 @@
 import {Text, View, StyleSheet, TextInput, Pressable, FlatList} from "react-native";
 import {colors} from "../../colors";
 import {useState} from "react";
+import {useAuth} from "../../context/AuthContext";
 
 type Props = {
     names: string[];
@@ -11,6 +12,8 @@ type Props = {
 };
 
 export default function ReservationStep2(props: Props) {
+    const {user} = useAuth();
+
     const [names, setNames] = useState<string[]>(
         Array.from({length: props.count}, (_, i) => props.names[i] ?? "")
     );
@@ -55,12 +58,11 @@ export default function ReservationStep2(props: Props) {
                 renderItem={({item: index}) => (
                     <View style={style.inputGroup}>
                         <Text style={style.label}>
-                            {/*Todo renplacer par le nom prénom de l'utilisateur*/}
                             {index === 0 ? "Votre place :" : `Dénomination place ${index + 1}* :`}
                         </Text>
                         <TextInput
                             style={[style.input, index === 0 && style.inputDisabled]}
-                            value={index === 0 ? "(Vous)" : names[index]}
+                            value={index === 0 ? `${user?.name}` : names[index]}
                             onChangeText={(text) => index !== 0 && handleChange(text, index)}
                             editable={index !== 0}
                         />
