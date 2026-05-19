@@ -1,26 +1,82 @@
-import {Text, View} from 'react-native';
+import {SectionList, Text, View} from 'react-native';
 import {styles} from '../styles';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../types/RootStackParamList';
 import {useAuth} from "../context/AuthContext";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
+import {useInjection} from "../hooks/ioc.react";
+import UserTickets from "../../application/usecase/UserTickets";
+import {Reservation} from "../../domain/core/Reservation";
+import EventCard from "../components/EventCard";
+import {colors} from "../colors";
 
 type Props = NativeStackScreenProps<RootStackParamList>;
 
 export default function Tickets({navigation}: Props) {
     const {user} = useAuth();
+    const ticketUC = useInjection<UserTickets>(UserTickets);
+    const [tickets, setTickets] = useState<Reservation[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!user) {
             navigation.navigate("Mon compte", {screen: "Login"});
+            return;
         }
+
+        let cancelled = false;
+
+        ticketUC.execute().then(result => {
+            if (!cancelled) {
+                setTickets(result ?? []);
+                setLoading(false);
+            }
+        });
+
+        return () => { cancelled = true; };
     }, [user, navigation]);
 
-    if (!user) return null;
+    if (!user || loading) return null;
+
+    const now = new Date();
+    const upcomingTickets = tickets.filter(r => r.event.endAt >= now);
+    const expiredTickets = tickets.filter(r => r.event.endAt < now);
+    const isEmpty = upcomingTickets.length === 0 && expiredTickets.length === 0;
+
+    if (isEmpty) {
+        return (
+            <View style={styles.screen}>
+                <Text style={styles.pageTitle}>Mes tickets</Text>
+                <Text style={[styles.ecDate, {textAlign: 'center', marginTop: 32}, {color: colors.black}]}>
+                    Aucun ticket pour le moment.
+                </Text>
+            </View>
+        );
+    }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Bienvenue sur la page de tickets!</Text>
+        <View style={styles.screen}>
+            <SectionList
+                sections={[
+                    {title: "Mes tickets", data: upcomingTickets},
+                    {title: "Tickets expirés", data: expiredTickets},
+                ]}
+                keyExtractor={(item) => item.token}
+                renderItem={({item}) => (
+                    <EventCard
+                        event={item.event}
+                        action={() => navigation.navigate("Home")}
+                        actionName="Détails"
+                    />
+                )}
+                renderSectionHeader={({section: {title, data}}) =>
+                    data.length > 0
+                        ? <Text style={styles.pageTitle}>{title}</Text>
+                        : null
+                }
+                stickySectionHeadersEnabled={false}
+                contentContainerStyle={{gap: 12}}
+            />
         </View>
     );
 }

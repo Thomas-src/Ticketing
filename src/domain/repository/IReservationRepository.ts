@@ -7,4 +7,5 @@ export default abstract class IReservationRepository {
     abstract saveReservation(reservation: Reservation): Promise<void>
 
     abstract getUserTickets(): Promise<Reservation[] | null>;
-}
+
+    abstract getReservationByToken(token: string): Promise<Reservation | null>;}
