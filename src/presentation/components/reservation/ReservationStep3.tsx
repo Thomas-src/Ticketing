@@ -1,13 +1,15 @@
 import {Event} from "../../../domain/core/Event"
-import {FlatList, Pressable, StyleSheet, Text, TextInput, View} from "react-native";
+import {Pressable, StyleSheet, Text, TextInput, View} from "react-native";
 import {colors} from "../../colors";
-import {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {useInjection} from "../../hooks/ioc.react";
 import SaveReservation from "../../../application/usecase/SaveReservation";
 import {Reservation} from "../../../domain/core/Reservation";
 import {useAuth} from "../../context/AuthContext";
 import 'react-native-get-random-values';
 import {v4 as uuid} from "uuid";
+import CreditCard from "../../../domain/core/CreditCard";
+import {styles} from "../../styles";
 
 type Props = {
     event: Event;
@@ -25,21 +27,18 @@ export default function ReservationStep3(props: Props) {
     const [expirationMonth, setExpirationMonth] = useState("");
     const [expirationYear, setExpirationYear] = useState("");
     const [cvc, setCvc] = useState("");
+    const [errors, setErrors] = useState<string>("");
 
     const {user} = useAuth();
 
-    // console.log(props.names.length)
-    //
-    // for (let current of props.names) {
-    //     console.log("====")
-    //     console.log(current.toString());
-    // }
+    const yearSub = new Date().getFullYear().toString().slice(0, 2);
+    console.log(yearSub)
 
-    const formCorrect = () => {
+    const formCorrect = useCallback(() => {
         const ibanRegex = /^BE\d{14}$/;
         const monthRegex = /^(0[1-9]|1[0-2])$/;
         const yearRegex = /^(202[6-9]|20[3-9]\d|2[1-9]\d{2}|[3-9]\d{3})$/;
-        const cvcRegex = /^\d{3}$/;
+        const cvcRegex = /^\d{3,4}$/;
 
         return (
             ibanRegex.test(iban) &&
@@ -47,7 +46,7 @@ export default function ReservationStep3(props: Props) {
             yearRegex.test(expirationYear) &&
             cvcRegex.test(cvc)
         );
-    };
+    }, [iban, expirationMonth, expirationYear, cvc]);
 
     // Enregistrer la reservation, si aucun crash alors on va vers la page succes, sinon fail
     const nextPage = async () => {
@@ -56,15 +55,24 @@ export default function ReservationStep3(props: Props) {
         const token = uuid();
 
         const reservation = new Reservation(user, quantity, props.event, guests, token, false);
-
+        let creditCard = null;
         try {
-            await saveReservationUC.execute(reservation);
-
-            props.onSucces()
+            creditCard = new CreditCard(iban, parseInt(cvc), parseInt(expirationMonth), parseInt(expirationYear));
         } catch (error) {
-            props.onFail();
+            if (error instanceof Error) {
+                setErrors(error.message);
+            }
+            return;
         }
 
+        if (errors === "") {
+            try {
+                await saveReservationUC.execute(reservation, creditCard);
+                props.onSucces()
+            } catch (error) {
+                props.onFail();
+            }
+        }
     }
 
     return (
@@ -85,7 +93,6 @@ export default function ReservationStep3(props: Props) {
                         <Text>Iban : </Text>
                         <TextInput
                             style={style.input}
-                            keyboardType="numeric"
                             value={iban}
                             onChangeText={setIban}
                             maxLength={16}
@@ -107,8 +114,8 @@ export default function ReservationStep3(props: Props) {
                                 <TextInput
                                     style={[style.input, style.expirationInput]}
                                     keyboardType="numeric"
-                                    onChangeText={setExpirationYear}
-                                    maxLength={4}
+                                    onChangeText={(r => setExpirationYear(String(yearSub) + r))}
+                                    maxLength={2}
                                 />
                             </View>
                         </View>
@@ -118,13 +125,13 @@ export default function ReservationStep3(props: Props) {
                                 style={style.input}
                                 keyboardType="numeric"
                                 onChangeText={setCvc}
-                                maxLength={3}
+                                maxLength={4}
                             />
                         </View>
                     </View>
                 </View>
                 <View style={style.marginAuto}>
-                    <Text style={style.endText}>Total à payer : {props.event.price * props.count} €</Text>
+                    <Text style={style.endText}>Total à payer : {props.event.price * props.count}€</Text>
                 </View>
             </View>
 
@@ -136,6 +143,9 @@ export default function ReservationStep3(props: Props) {
                            disabled={!formCorrect()}>
                     <Text style={[style.ButtonText, style.w]}>Continuer</Text>
                 </Pressable>
+                {errors !== "" && (
+                    <Text style={styles.colorRed}>{errors}</Text>
+                )}
             </View>
         </View>
     )
@@ -192,10 +202,11 @@ const style = StyleSheet.create({
     },
     input: {
         backgroundColor: colors.grey,
+        color: colors.black,
         borderRadius: 8,
-        height: 20,
+        height: 40,
         marginTop: 5,
-        paddingHorizontal: 5,
+        paddingHorizontal: 10,
     },
     buttonsStyles: {
         flexDirection: "row",

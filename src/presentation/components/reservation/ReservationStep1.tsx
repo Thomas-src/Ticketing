@@ -1,7 +1,5 @@
-import {View, Text, Pressable, StyleSheet, TextInput} from 'react-native';
-import {styles} from '../../styles';
+import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {colors} from "../../colors";
-import {Input} from "postcss";
 import {useState} from "react";
 import {Event} from "../../../domain/core/Event"
 
@@ -16,7 +14,7 @@ type Props = {
 
 export default function ReservationStep1(props: Props) {
     const [count, setCount] = useState(0);
-    const [inputText, setInputText] = useState("0");
+    const [inputText, setInputText] = useState("");
 
     const countValid = count > 0;
 
@@ -76,9 +74,10 @@ const style = StyleSheet.create({
         color: colors.white,
     },
     container: {
-        display: "flex",
+        flexGrow: 1,
         flexDirection: "column",
-        gap: 15
+        gap: 15,
+        paddingBottom: 20,
     },
     stepsContainer: {
         flexDirection: 'row',
@@ -101,13 +100,14 @@ const style = StyleSheet.create({
     },
     input: {
         backgroundColor: colors.grey,
+        color: colors.black,
         borderRadius: 8,
-        height: 20,
-        marginTop: 5,
-        paddingHorizontal: 5
+        height: 40,
+        paddingHorizontal: 10,
+        fontSize: 16,
     },
     priceContainer: {
-        margin: "auto",
+        alignSelf: 'center',
         gap: 10
     },
     textDesign: {
@@ -117,6 +117,7 @@ const style = StyleSheet.create({
     buttonsStyles: {
         flexDirection: "row",
         justifyContent: "space-between",
+        marginTop: 'auto',
     },
     backButton: {
         width: "30%",
@@ -132,6 +133,7 @@ const style = StyleSheet.create({
         backgroundColor: colors.blue,
         width: "30%",
         borderRadius: 5,
+        padding: 10,
     },
     nextButtonDisabled: {
         opacity: 0.6,

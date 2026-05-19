@@ -83,7 +83,7 @@ export default function Home() {
                 )}
                 contentContainerStyle={{gap: 12}}
                 refreshing={loading}
-                onRefresh={() => handleRefresh()}
+                onRefresh={handleRefresh}
             />
         </View>
     );
