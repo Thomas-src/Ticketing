@@ -28,6 +28,7 @@ export default class SaveReservation {
             throw new FullEventException("L'événement est complet");
         }
 
+
         try {
             await this.repo.saveReservation(reservation);
         } catch (error) {
