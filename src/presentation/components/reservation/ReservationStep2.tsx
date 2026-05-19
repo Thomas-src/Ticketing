@@ -1,4 +1,4 @@
-import {Text, View, StyleSheet, TextInput, Pressable, FlatList} from "react-native";
+import {FlatList, Pressable, StyleSheet, Text, TextInput, View} from "react-native";
 import {colors} from "../../colors";
 import {useState} from "react";
 import {useAuth} from "../../context/AuthContext";
@@ -74,7 +74,9 @@ export default function ReservationStep2(props: Props) {
                 <Pressable style={style.backButton} onPress={() => props.onBack()}>
                     <Text style={style.ButtonText}>Retour</Text>
                 </Pressable>
-                <Pressable style={[style.nextButton, !allInputValid() && style.pressableDisabled]} onPress={() => {props.onNext()}} disabled={!allInputValid()}>
+                <Pressable style={[style.nextButton, !allInputValid() && style.pressableDisabled]} onPress={() => {
+                    props.onNext()
+                }} disabled={!allInputValid()}>
                     <Text style={[style.ButtonText, style.w]}>Continuer</Text>
                 </Pressable>
             </View>
@@ -118,10 +120,11 @@ const style = StyleSheet.create({
     },
     input: {
         backgroundColor: colors.grey,
+        color: colors.black,
         borderRadius: 8,
-        height: 20,
+        height: 40,
         marginTop: 5,
-        paddingHorizontal: 5,
+        paddingHorizontal: 10,
     },
     buttonsStyles: {
         flexDirection: "row",
@@ -143,11 +146,11 @@ const style = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
     },
-    inputDisabled:{
+    inputDisabled: {
         opacity: 0.6,
     },
     pressableDisabled: {
         opacity: 0.6,
-        backgroundColor : colors.lightBlue,
+        backgroundColor: colors.lightBlue,
     },
 });

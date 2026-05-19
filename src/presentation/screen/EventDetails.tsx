@@ -1,5 +1,5 @@
 import {Modal, Pressable, Share, StyleSheet, Text, View} from 'react-native';
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useState} from "react";
 
 import ContextDetailsCard from "../components/eventDetails/ContextDetailsCard";
 import ContextWhenCard from "../components/eventDetails/ContextWhenCard";
@@ -20,6 +20,7 @@ import {useInjection} from "../hooks/ioc.react";
 import ReservationSucces from "../components/reservation/ReservationSucces";
 import ReservationFail from "../components/reservation/ReservationFail";
 import {useAuth} from "../context/AuthContext";
+import {useFocusEffect} from "@react-navigation/core";
 
 type Props = NativeStackScreenProps<RootStackParamList, "Details">;
 
@@ -82,28 +83,36 @@ export default function EventDetails({route, navigation}: Props) {
         }
     }, [actualEvent]);
 
-    useEffect(() => {
-        const fetchEvent = async () => {
-            try {
-                const event = await displayEvent.execute(eventId);
-                console.log("Affichage des détails de : " + event?.title)
-                if (!event) {
-                    navigation.goBack()
-                } else {
-                    setActualEvent(event);
-                }
-            } catch (error) {
-                console.error("Erreur lors du chargement de l'event :", error);
-            } finally {
-                setLoading(false);
+    const fetchEvent = useCallback(async () => {
+        try {
+            setLoading(true);
+            const event = await displayEvent.execute(eventId);
+            console.log("Affichage des détails de : " + event?.title);
+            if (!event) {
+                navigation.goBack();
+            } else {
+                setActualEvent(event);
             }
-        };
+        } catch (error) {
+            console.error("Erreur lors du chargement de l'event :", error);
+        } finally {
+            setLoading(false);
+        }
+    }, [eventId, displayEvent, navigation]);
 
-        fetchEvent();
-    }, [eventId]);
+    useFocusEffect(
+        useCallback(() => {
+            fetchEvent();
+        }, [fetchEvent])
+    );
+
 
     if (!actualEvent) {
-        return;
+        return (
+            <View style={styles.container}>
+                <Text>Evenement introuvable</Text>
+            </View>
+        );
     }
 
 
@@ -244,7 +253,7 @@ const actual = StyleSheet.create({
         marginTop: "40%",
         backgroundColor: colors.white,
         width: "90%",
-        height: "30%",
+        height: "60%",
     },
     backdrop: {
         flex: 1,
