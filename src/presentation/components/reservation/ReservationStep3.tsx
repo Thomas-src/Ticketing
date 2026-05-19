@@ -124,7 +124,7 @@ export default function ReservationStep3(props: Props) {
                     </View>
                 </View>
                 <View style={style.marginAuto}>
-                    <Text style={style.endText}>Total à payer : {props.event.price * props.count}</Text>
+                    <Text style={style.endText}>Total à payer : {props.event.price * props.count} €</Text>
                 </View>
             </View>
 
