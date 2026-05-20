@@ -23,6 +23,7 @@ import ReservationRepositoryPocketBase from "./src/infrastructure/repository/Res
 import VerifyTickets from "./src/application/usecase/VerifyTickets";
 import SaveReservation from "./src/application/usecase/SaveReservation";
 import UserTickets from "./src/application/usecase/UserTickets";
+import GetTicket from "./src/application/usecase/GetTicket";
 
 
 const container = new Container({defaultScope: "Singleton"});
@@ -50,5 +51,6 @@ container.bind(UpdateEvent).toSelf();
 container.bind(VerifyTickets).toSelf();
 container.bind(SaveReservation).toSelf();
 container.bind(UserTickets).toSelf();
+container.bind(GetTicket).toSelf();
 
 export {container};

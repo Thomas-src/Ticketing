@@ -82,7 +82,7 @@ export default class ReservationRepositoryPocketBase extends IReservationReposit
                 members: authUserId,
                 quantity: reservation.quantity,
                 events: reservation.event.id,
-                guests: reservation.guests,
+                guests: reservation.guests.filter(g => g.trim() !== ""),
                 token: reservation.token,
                 scanned: false,
             });
@@ -91,8 +91,26 @@ export default class ReservationRepositoryPocketBase extends IReservationReposit
             console.error(error);
             throw error;
         }
+    }
 
 
+    async getReservationByToken(token: string): Promise<Reservation | null> {
+        const clean = sanitize(token);
 
+        try {
+            const reservation = await pb
+                .collection(collectionName)
+                .getFirstListItem(
+                    `token = "${clean}"`,
+                    {
+                        expand: 'members,events,events.locations,events.tags'
+                    }
+                );
+
+            return toReservation(reservation);
+        } catch (e) {
+            console.error(e);
+            return null;
+        }
     }
 }
