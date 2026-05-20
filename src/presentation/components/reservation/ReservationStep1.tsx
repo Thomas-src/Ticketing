@@ -74,7 +74,7 @@ const style = StyleSheet.create({
         color: colors.white,
     },
     container: {
-        flexGrow: 1,
+        // flexGrow: 1,
         flexDirection: "column",
         gap: 15,
         paddingBottom: 20,

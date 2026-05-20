@@ -45,7 +45,7 @@ export default function TicketsDetails() {
         </View>
     }
 
-    return <ScrollView contentContainerStyle={[styles.screen, style.container]}>
+    return <ScrollView contentContainerStyle={[style.container]}>
         <Text style={style.title}>{ticket.event.title}</Text>
         <ContextWhereCard adress={ticket.event.address} />
         <ContextWhenCard
@@ -60,7 +60,7 @@ const style = StyleSheet.create({
     container: {
         flexDirection: "column",
         gap: 12,
-        paddingBottom: 32, // évite que le dernier élément colle au bas
+        paddingBottom: 32,
     },
     title: {
         fontSize: 24,

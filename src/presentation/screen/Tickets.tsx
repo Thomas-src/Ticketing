@@ -3,7 +3,7 @@ import {styles} from '../styles';
 import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {RootStackParamList} from '../../types/RootStackParamList';
 import {useAuth} from "../context/AuthContext";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useInjection} from "../hooks/ioc.react";
 import UserTickets from "../../application/usecase/UserTickets";
 import {Reservation} from "../../domain/core/Reservation";
@@ -11,6 +11,7 @@ import EventCard from "../components/EventCard";
 import {colors} from "../colors";
 import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
+import {useFocusEffect} from "@react-navigation/core";
 
 type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -23,23 +24,26 @@ export default function Tickets() {
     const [tickets, setTickets] = useState<Reservation[]>([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (!user) {
-            navigation.navigate("Mon compte", {screen: "Login"});
-            return;
-        }
-
-        let cancelled = false;
-
-        ticketUC.execute().then(result => {
-            if (!cancelled) {
-                setTickets(result ?? []);
-                setLoading(false);
+    useFocusEffect(
+        useCallback(() => {
+            if (!user) {
+                navigation.navigate("Mon compte", {screen: "Login"});
+                return;
             }
-        });
 
-        return () => { cancelled = true; };
-    }, [user, navigation]);
+            let cancelled = false;
+            setLoading(true);
+
+            ticketUC.execute().then(result => {
+                if (!cancelled) {
+                    setTickets(result ?? []);
+                    setLoading(false);
+                }
+            });
+
+            return () => { cancelled = true; };
+        }, [user, navigation])
+    );
 
     if (!user || loading) return null;
 

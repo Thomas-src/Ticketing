@@ -53,6 +53,11 @@ export default function EventDetails({route, navigation}: Props) {
         setCount(0);
     }, []);
 
+    const success = () => {
+        resetModal();
+        navigation.navigate("Tickets")
+    }
+
     const shareEvent = useCallback(async () => {
         if (!actualEvent) return;
         const startDate = new Date(actualEvent.startAt);
@@ -202,7 +207,7 @@ export default function EventDetails({route, navigation}: Props) {
                                     event={actualEvent}
                                     count={count}
                                     names={names}
-                                    onClose={resetModal}/>
+                                    onClose={success}/>
                             )}
                             {step === 5 && (
                                 <ReservationFail onClose={() => setStep(1)}/>
