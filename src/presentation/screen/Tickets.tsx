@@ -1,6 +1,6 @@
 import {SectionList, Text, View} from 'react-native';
 import {styles} from '../styles';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {RootStackParamList} from '../../types/RootStackParamList';
 import {useAuth} from "../context/AuthContext";
 import {useEffect, useState} from "react";
@@ -9,10 +9,15 @@ import UserTickets from "../../application/usecase/UserTickets";
 import {Reservation} from "../../domain/core/Reservation";
 import EventCard from "../components/EventCard";
 import {colors} from "../colors";
+import {useNavigation} from "@react-navigation/native";
+import {NativeStackNavigationProp} from "@react-navigation/native-stack";
 
-type Props = NativeStackScreenProps<RootStackParamList>;
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-export default function Tickets({navigation}: Props) {
+
+export default function Tickets() {
+    const navigation = useNavigation<NavigationProp>();
+
     const {user} = useAuth();
     const ticketUC = useInjection<UserTickets>(UserTickets);
     const [tickets, setTickets] = useState<Reservation[]>([]);
@@ -55,7 +60,7 @@ export default function Tickets({navigation}: Props) {
     }
 
     return (
-        <View style={styles.screen}>
+        <View style={[styles.screen, {marginTop: 60, paddingHorizontal: 16}]}>
             <SectionList
                 sections={[
                     {title: "Mes tickets", data: upcomingTickets},
@@ -65,7 +70,7 @@ export default function Tickets({navigation}: Props) {
                 renderItem={({item}) => (
                     <EventCard
                         event={item.event}
-                        action={() => navigation.navigate("Home")}
+                        action={() => navigation.navigate("TicketsDetails", {token : item.token})}
                         actionName="Détails"
                     />
                 )}
@@ -75,7 +80,7 @@ export default function Tickets({navigation}: Props) {
                         : null
                 }
                 stickySectionHeadersEnabled={false}
-                contentContainerStyle={{gap: 12}}
+                contentContainerStyle={{gap: 8}}
             />
         </View>
     );

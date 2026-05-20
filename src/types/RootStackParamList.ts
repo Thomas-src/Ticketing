@@ -19,6 +19,8 @@ export type RootStackParamList = {
     Login: undefined;
     Home: undefined;
     Details: { eventId: string };
+    Tickets: undefined;
+    TicketsDetails: { token: string };
     // settings
     CreateEvent: undefined;
     ManageEvent: undefined;

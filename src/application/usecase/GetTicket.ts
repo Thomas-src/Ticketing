@@ -14,8 +14,9 @@ export default class GetTicket {
         const reservation = await this.repo.getReservationByToken(token);
 
         if (!reservation) {
-            throw new Error(`Reservation not found for token: ${token}`);
+            throw new Error(`Reservation non trouvé pour le token : ${token}`);
         }
 
-        return reservation;    }
+        return reservation;
+    }
 }

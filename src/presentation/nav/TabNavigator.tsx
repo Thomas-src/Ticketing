@@ -12,6 +12,7 @@ import Tickets from '../screen/Tickets';
 import {styles} from "../styles";
 import {colors} from "../colors";
 import EventDetails from "../screen/EventDetails";
+import TicketsDetails from "../screen/TicketsDetails";
 
 function withLayout(Component: React.ComponentType<any>) {
     return function WrappedScreen(props: any) {
@@ -84,6 +85,14 @@ export default function TabNavigator() {
                             </Text>
                         </View>
                     ),
+                }}
+            />
+            <Tab.Screen
+                name="TicketsDetails"
+                component={withLayout(TicketsDetails)}
+                options={{
+                    tabBarButton: () => null,
+                    tabBarItemStyle: {display: 'none'},
                 }}
             />
             {/* AccountNavigator gère Settings, Signup et Login — le footer reste visible */}
