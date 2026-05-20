@@ -3,7 +3,7 @@ import {styles} from '../../styles';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AccountStackParamList} from '../../../types/RootStackParamList';
 import {useInjection} from "../../hooks/ioc.react";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import {Event} from "../../../domain/core/Event";
 import EventCard from "../../components/EventCard";
 import GetOwnerEvents from "../../../application/usecase/GetOwnerEvents"
@@ -14,7 +14,6 @@ type Props = NativeStackScreenProps<AccountStackParamList>;
 export default function ManageEvent({navigation}: Props) {
     const userEvents = useInjection<GetOwnerEvents>(GetOwnerEvents);
 
-    const date = useRef(new Date()).current;
     const [events, setEvents] = useState<Event[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);

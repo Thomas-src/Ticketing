@@ -107,19 +107,17 @@ export default function EventDetails({route, navigation}: Props) {
     );
 
 
-    if (!actualEvent) {
-        return (
-            <View style={styles.container}>
-                <Text>Evenement introuvable</Text>
-            </View>
-        );
-    }
-
-
     if (loading) {
         return (
             <View style={styles.container}>
                 <Text>Loading...</Text>
+            </View>
+        );
+    }
+    if (!actualEvent) {
+        return (
+            <View style={styles.container}>
+                <Text>Evenement introuvable</Text>
             </View>
         );
     }

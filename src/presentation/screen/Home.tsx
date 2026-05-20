@@ -47,14 +47,15 @@ export default function Home() {
     const handleRefresh = useCallback(() => {
         loadEvents(true);
     }, [loadEvents]);
+    useEffect(() => {
+        loadEvents();
+    }, []);
 
     const navigateToDetails = useCallback((eventId: string) => {
         navigation.navigate("Details", {eventId});
     }, [navigation]);
 
-    useEffect(() => {
-        loadEvents();
-    }, []);
+
     if (loading) {
         return (
             <View style={styles.screen}>

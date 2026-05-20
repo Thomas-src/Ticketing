@@ -6,6 +6,7 @@ import {Reservation} from "../../domain/core/Reservation";
 import User from "../../domain/core/User";
 
 export function toAddress(r: Address): Address {
+    console.log(r.address);
     return new Address(
         r.name ?? "",
         r.address ?? "",

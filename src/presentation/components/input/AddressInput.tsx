@@ -6,8 +6,13 @@ import {LocationFinder} from "../../../domain/core/services/LocationFinder";
 import {colors} from "../../colors";
 import {Location} from "../../../types/ScreenType";
 
-export default function AddressInput({onSelect}: any) {
-    const [value, setValue] = useState("");
+type Props = {
+    onSelect: (place: Location) => void;
+    value?: string;
+}
+
+export default function AddressInput({onSelect, value}: Props) {
+    const [inputValue, setInputValue] = useState(value ?? '');
     const [results, setResults] = useState<Location[]>([]);
     const [isFocused, setIsFocused] = useState(false);
 
@@ -16,7 +21,7 @@ export default function AddressInput({onSelect}: any) {
     const locationFinder = useInjection<LocationFinder>(LocationFinder);
 
     const search = (text: string) => {
-        setValue(text);
+        setInputValue(text);
 
         if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
@@ -38,7 +43,7 @@ export default function AddressInput({onSelect}: any) {
     };
 
     const handleSelect = (location: Location) => {
-        setValue(location.address);
+        setInputValue(location.address);
         setResults([]);
         setIsFocused(false);
 
@@ -55,7 +60,7 @@ export default function AddressInput({onSelect}: any) {
             ]}
         >
             <TextInput
-                value={value}
+                value={inputValue}
                 onChangeText={search}
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setTimeout(() => setIsFocused(false), 200)}

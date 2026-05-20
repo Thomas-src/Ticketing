@@ -1,5 +1,5 @@
 import {Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View,} from 'react-native';
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../types/RootStackParamList';
@@ -116,69 +116,70 @@ export default function CreateEvent({navigation}: Props) {
     const [showTagsDropdown, setShowTagsDropdown] = useState(false);
 
     const [errors, setErrors] = useState<ValidationError[]>([]);
-    const getError = (field: string) => errors.find((e) => e.field === field)?.message;
-    const clearError = (field: string) => setErrors((prev) => prev.filter((e) => e.field !== field));
+    const getError = useCallback(
+        (field: string) => errors.find((e) => e.field === field)?.message,
+        [errors]
+    );
 
-    const handleSubmit = async () => {
+    const clearError = useCallback(
+        (field: string) => setErrors((prev) => prev.filter((e) => e.field !== field)),
+        []
+    );
+
+    const resetForm = useCallback(() => {
+        setTitle(initialForm.title);
+        setDescription(initialForm.description);
+        setImage(initialForm.image);
+        setImageName(initialForm.imageName);
+        setSeats(initialForm.seats);
+        setTags(initialForm.tags);
+        setPrice(initialForm.price);
+        setStartAt(initialForm.startAt);
+        setEndAt(initialForm.endAt);
+        setAddressName(initialForm.addressName);
+        setAddress(initialForm.address);
+        setCity(initialForm.city);
+        setErrors([]);
+    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            return () => resetForm();
+        }, [resetForm])
+    );
+
+    const handleSubmit = useCallback(async () => {
         const validationErrors = validateEvent({
             title, description, seats, tags, startAt, endAt, addressName, address, image, price
         });
 
         if (validationErrors.length > 0) {
-            console.log("errors", validationErrors)
             setErrors(validationErrors);
             return;
         }
 
         setErrors([]);
-        const EventAddress = new Address(addressName, address, city)
-        const EventTags: Tag[] = tags.map((tag) => new Tag(tag));
-        const event = new Event("-1", title, description, parseInt(seats, 10), startAt, endAt, image, EventTags, parseFloat(price), EventAddress);
+
+        const eventAddress = new Address(addressName, address, city);
+        const eventTags: Tag[] = tags.map((tag) => new Tag(tag));
+        const event = new Event(
+            "-1", title, description,
+            parseInt(seats, 10), startAt, endAt,
+            image, eventTags, parseFloat(price), eventAddress
+        );
+
         try {
-            const EventCreated = await createEvent.execute(event);
-
-            setTitle(initialForm.title);
-            setDescription(initialForm.description);
-            setImage(initialForm.image);
-            setImageName(initialForm.imageName);
-            setSeats(initialForm.seats);
-            setTags(initialForm.tags);
-            setPrice(initialForm.price);
-            setStartAt(initialForm.startAt);
-            setEndAt(initialForm.endAt);
-            setAddressName(initialForm.addressName);
-            setAddress(initialForm.address);
-            setCity(initialForm.city);
-            setErrors([]);
-            navigation.navigate("Details", {
-                eventId: EventCreated.id
-            })
+            const created = await createEvent.execute(event);
+            resetForm();
+            navigation.navigate("Details", {eventId: created.id});
         } catch (error) {
-            console.log(error)
-            setErrors([{field: "none", message: "Une erreur s'est produite, veuillez réassayer"}]);
+            console.error(error);
+            setErrors([{field: "none", message: "Une erreur s'est produite, veuillez réessayer"}]);
         }
-    }
-    useFocusEffect(
-        useCallback(() => {
-            return () => {
-                setTitle(initialForm.title);
-                setDescription(initialForm.description);
-                setImage(initialForm.image);
-                setImageName(initialForm.imageName);
-                setSeats(initialForm.seats);
-                setTags(initialForm.tags);
-                setPrice(initialForm.price);
-                setStartAt(initialForm.startAt);
-                setEndAt(initialForm.endAt);
-                setAddressName(initialForm.addressName);
-                setAddress(initialForm.address);
-                setCity(initialForm.city);
-                setErrors([]);
-            };
-        }, [])
-    );
+    }, [title, description, seats, tags, startAt, endAt, addressName, address, city, image, price, createEvent, navigation, resetForm]);
 
-    const pickImage = async () => {
+
+    const pickImage = useCallback(async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permissionResult.granted) {
             Alert.alert('Permission required', 'Permission to access the media library is required.');
@@ -195,12 +196,68 @@ export default function CreateEvent({navigation}: Props) {
             setImage(result.assets[0].uri);
             setImageName(result.assets[0].fileName ?? '');
         }
-    };
+    }, [clearError]);
 
-    const toggleTag = (selectedTag: string) => {
-        setTags((prev) => prev.includes(selectedTag) ? prev.filter((t) => t !== selectedTag) : [...prev, selectedTag]);
+    const toggleTag = useCallback((selectedTag: string) => {
+        setTags((prev) =>
+            prev.includes(selectedTag) ? prev.filter((t) => t !== selectedTag) : [...prev, selectedTag]);
         clearError('tags');
-    };
+    }, [clearError]);
+
+    const tagsLabel = useMemo(() => tags.length > 0 ? tags.join(', ') : 'Sélectionner…',
+        [tags]
+    );
+
+    const imageLabel = useMemo(() => image ? `✓ ${imageName}` : 'Sélectionner une image',
+        [image, imageName]
+    );
+
+    const onStartDateChange = useCallback((_: unknown, date?: Date) => {
+        setShowStartDatePicker(false);
+        if (date) {
+            setStartAt((prev) => {
+                const u = new Date(prev);
+                u.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+                return u;
+            });
+        }
+    }, []);
+
+    const onStartTimeChange = useCallback((_: unknown, date?: Date) => {
+        setShowStartTimePicker(false);
+        if (date) {
+            setStartAt((prev) => {
+                const u = new Date(prev);
+                u.setHours(date.getHours(), date.getMinutes());
+                return u;
+            });
+        }
+    }, []);
+
+    const onEndDateChange = useCallback((_: unknown, date?: Date) => {
+        setShowEndDatePicker(false);
+        if (date) {
+            setEndAt((prev) => {
+                const u = new Date(prev);
+                u.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
+                return u;
+            });
+            clearError('endAt');
+        }
+    }, [clearError]);
+
+    const onEndTimeChange = useCallback((_: unknown, date?: Date) => {
+        setShowEndTimePicker(false);
+        if (date) {
+            setEndAt((prev) => {
+                const u = new Date(prev);
+                u.setHours(date.getHours(), date.getMinutes());
+                return u;
+            });
+            clearError('endAt');
+        }
+    }, [clearError]);
+
 
     useEffect(() => {
         if (tagsLoaded) return;
@@ -271,7 +328,7 @@ export default function CreateEvent({navigation}: Props) {
                     <FieldRow icon={<ImageIcon color={colors.white} size={16}/>} label="Image"
                               error={getError('image')}>
                         <Pressable onPress={pickImage} style={pageStyles.imageBtn}>
-                            <Text style={pageStyles.imageBtnText}>{image ? `✓ ${imageName}` : 'Sélectionner une image'}
+                            <Text style={pageStyles.imageBtnText}>{imageLabel}
                             </Text>
                         </Pressable>
                     </FieldRow>
@@ -300,7 +357,7 @@ export default function CreateEvent({navigation}: Props) {
                                     onPress={() => setShowTagsDropdown((v) => !v)}
                                 >
                                     <Text style={{color: colors.white, fontSize: 14, flex: 1}}>
-                                        {tags.length > 0 ? tags.join(', ') : 'Sélectionner…'}
+                                        {tagsLabel}
                                     </Text>
                                     <ChevronDown color={colors.white} size={16}/>
                                 </Pressable>
@@ -404,60 +461,14 @@ export default function CreateEvent({navigation}: Props) {
                     <Text style={pageStyles.submitText}>Créer l'évènement</Text>
                 </Pressable>
 
-                {showStartDatePicker && (
-                    <DateTimePicker
-                        value={startAt} mode="date" display="default"
-                        onChange={(_, date) => {
-                            setShowStartDatePicker(false);
-                            if (date) {
-                                const u = new Date(startAt);
-                                u.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
-                                setStartAt(u);
-                            }
-                        }}
-                    />
-                )}
-                {showStartTimePicker && (
-                    <DateTimePicker
-                        value={startAt} mode="time" display="default"
-                        onChange={(_, date) => {
-                            setShowStartTimePicker(false);
-                            if (date) {
-                                const u = new Date(startAt);
-                                u.setHours(date.getHours(), date.getMinutes());
-                                setStartAt(u);
-                            }
-                        }}
-                    />
-                )}
-                {showEndDatePicker && (
-                    <DateTimePicker
-                        value={endAt} mode="date" display="default"
-                        onChange={(_, date) => {
-                            setShowEndDatePicker(false);
-                            if (date) {
-                                const u = new Date(endAt);
-                                u.setFullYear(date.getFullYear(), date.getMonth(), date.getDate());
-                                setEndAt(u);
-                                clearError('endAt');
-                            }
-                        }}
-                    />
-                )}
-                {showEndTimePicker && (
-                    <DateTimePicker
-                        value={endAt} mode="time" display="default"
-                        onChange={(_, date) => {
-                            setShowEndTimePicker(false);
-                            if (date) {
-                                const u = new Date(endAt);
-                                u.setHours(date.getHours(), date.getMinutes());
-                                setEndAt(u);
-                                clearError('endAt');
-                            }
-                        }}
-                    />
-                )}
+                {showStartDatePicker &&
+                    <DateTimePicker value={startAt} mode="date" display="default" onChange={onStartDateChange}/>}
+                {showStartTimePicker &&
+                    <DateTimePicker value={startAt} mode="time" display="default" onChange={onStartTimeChange}/>}
+                {showEndDatePicker &&
+                    <DateTimePicker value={endAt} mode="date" display="default" onChange={onEndDateChange}/>}
+                {showEndTimePicker &&
+                    <DateTimePicker value={endAt} mode="time" display="default" onChange={onEndTimeChange}/>}
             </ScrollView>
         </KeyboardAvoidingView>
     );

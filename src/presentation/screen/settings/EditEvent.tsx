@@ -100,7 +100,7 @@ export default function EditEvent({navigation, route}: Props) {
     const getError = (field: string) => errors.find((e) => e.field === field)?.message;
     const clearError = (field: string) => setErrors((prev) => prev.filter((e) => e.field !== field));
 
-    // Load existing event data
+
     useEffect(() => {
         const load = async () => {
             try {
@@ -114,12 +114,14 @@ export default function EditEvent({navigation, route}: Props) {
                 setTitle(event.title);
                 setDescription(event.description);
                 setImage(event.image ?? '');
+                setImageName(null);
                 setSeats(String(event.size ?? ''));
                 setPrice(String(event.price ?? ''));
                 setTags(event.tags?.map((t: Tag) => t.name) ?? []);
                 setStartAt(event.startAt ? new Date(event.startAt) : new Date());
                 setEndAt(event.endAt ? new Date(event.endAt) : new Date());
                 setAddressName(event.address?.name ?? '');
+                console.log("edb", event.address?.address)
                 setAddress(event.address?.address ?? '');
                 setCity(event.address?.city ?? '');
             } catch (e) {
@@ -219,7 +221,11 @@ export default function EditEvent({navigation, route}: Props) {
     }
 
     return (
-        <KeyboardAvoidingView style={{flex: 1}} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <KeyboardAvoidingView
+            style={{flex: 1}}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
+        >
             <ScrollView
                 contentContainerStyle={pageStyles.content}
                 keyboardShouldPersistTaps="handled"
@@ -385,6 +391,7 @@ export default function EditEvent({navigation, route}: Props) {
                     <FieldRow elevated icon={<MapPin color={colors.white} size={16}/>} label="Adresse"
                               error={getError('address')}>
                         <AddressInput
+                            value={address}
                             onSelect={(place: Location) => {
                                 setAddress(place.address);
                                 setCity(place.city ?? '');

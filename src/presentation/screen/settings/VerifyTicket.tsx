@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useCallback, useState} from 'react';
 import {Button, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View,} from 'react-native';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AccountStackParamList} from '../../../types/RootStackParamList';
@@ -88,12 +88,12 @@ export default function VerifyTicket({route}: Props) {
 
     const result = qrResult ?? nfacResult;
 
-    const resetScan = () => {
+    const resetScan = useCallback(() => {
         resetQr();
         resetNfc();
-    };
+    }, []);
 
-    const handleSelectMode = async (selected: ScanMode) => {
+    const handleSelectMode = useCallback(async (selected: ScanMode) => {
         await cancelNfc();
         resetScan();
         setMode(selected);
@@ -101,7 +101,7 @@ export default function VerifyTicket({route}: Props) {
         if (selected === 'nfc') {
             scan();
         }
-    };
+    }, []);
 
     const statusColor = result?.ok ? colors.green : result?.reason === 'already_scanned' ? colors.warn : colors.red;
 
