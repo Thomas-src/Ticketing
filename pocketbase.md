@@ -21,6 +21,7 @@
 **Outils visuels**
 - lucide-react-native
 - Version : ^1.8.0
+
 Utilisé notamment pour tout les boutons "Décoratifs" (Ex : pin, calendar...)
 
 
