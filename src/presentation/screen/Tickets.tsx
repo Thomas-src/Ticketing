@@ -54,7 +54,7 @@ export default function Tickets() {
 
     if (isEmpty) {
         return (
-            <View style={styles.screen}>
+            <View style={[styles.screen, {marginTop: 60, paddingHorizontal: 16}]}>
                 <Text style={styles.pageTitle}>Mes tickets</Text>
                 <Text style={[styles.ecDate, {textAlign: 'center', marginTop: 32}, {color: colors.black}]}>
                     Aucun ticket pour le moment.
