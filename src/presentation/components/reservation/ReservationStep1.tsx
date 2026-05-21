@@ -74,7 +74,7 @@ const style = StyleSheet.create({
         color: colors.white,
     },
     container: {
-        // flexGrow: 1,
+        flexGrow: 1, // Si jamais sur IOS il faut desactiver ceci, sinon on reste bloquer sur l'écran 1
         flexDirection: "column",
         gap: 15,
         paddingBottom: 20,
