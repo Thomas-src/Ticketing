@@ -85,6 +85,7 @@ export default function Login({navigation}: Props) {
 
                         <Text style={styles.label}>Adresse e-mail*</Text>
                         <TextInput
+                            testID="email-input"
                             ref={emailRef}
                             style={styles.input}
                             value={email}
@@ -103,6 +104,7 @@ export default function Login({navigation}: Props) {
 
                         <Text style={styles.label}>Mot de passe*</Text>
                         <TextInput
+                            testID="pwd-input"
                             ref={passwordRef}
                             style={styles.input}
                             value={password}

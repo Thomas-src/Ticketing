@@ -1,0 +1,17 @@
+appId: com.anonymous.ticket
+
+---
+
+- launchApp
+- tapOn: "Mon compte"
+- tapOn: "Se connecter"
+- tapOn:
+    id: email-input
+- inputText: "thomas"
+- tapOn:
+    id: pwd-input
+- inputText: "thomas@helmo.be"
+
+- tapOn: "ENVOYER"
+- assertVisible:
+    text: "Email invalide"
