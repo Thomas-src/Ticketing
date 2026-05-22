@@ -129,6 +129,7 @@ const style = StyleSheet.create({
     buttonsStyles: {
         flexDirection: "row",
         justifyContent: "space-between",
+        marginTop: 'auto',
     },
     backButton: {
         width: "30%",

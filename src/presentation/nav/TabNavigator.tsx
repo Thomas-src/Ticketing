@@ -69,7 +69,7 @@ export default function TabNavigator() {
             />
             <Tab.Screen
                 name="Tickets"
-                component={Tickets}
+                component={withLayout(Tickets)}
                 options={{
                     tabBarLabel: () => null,
                     tabBarIcon: ({focused}) => (
