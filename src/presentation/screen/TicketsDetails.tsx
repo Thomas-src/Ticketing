@@ -3,11 +3,10 @@ import {RootStackParamList} from "../../types/RootStackParamList";
 import {useAuth} from "../context/AuthContext";
 import {useEffect, useState} from "react";
 import {Reservation} from "../../domain/core/Reservation";
-import {inject} from "inversify";
 import GetTicket from "../../application/usecase/GetTicket";
-import {useInject} from "inversify-hooks";
+
 import {useInjection} from "../hooks/ioc.react";
-import {View, StyleSheet, Text, ScrollView} from "react-native";
+import {ScrollView, StyleSheet, Text, View} from "react-native";
 import {useNavigation} from "@react-navigation/native";
 import {useRoute} from "@react-navigation/core";
 import {styles} from "../styles";
@@ -47,12 +46,12 @@ export default function TicketsDetails() {
 
     return <ScrollView contentContainerStyle={[style.container]}>
         <Text style={style.title}>{ticket.event.title}</Text>
-        <ContextWhereCard adress={ticket.event.address} />
+        <ContextWhereCard adress={ticket.event.address}/>
         <ContextWhenCard
             beginDate={ticket.event.startAt}
             endDate={ticket.event.endAt}
         />
-        <RecapView pticket={ticket} />
+        <RecapView pticket={ticket}/>
     </ScrollView>
 }
 

@@ -1,9 +1,8 @@
 import {SectionList, Text, View} from 'react-native';
 import {styles} from '../styles';
-import {BottomTabScreenProps} from '@react-navigation/bottom-tabs';
 import {RootStackParamList} from '../../types/RootStackParamList';
 import {useAuth} from "../context/AuthContext";
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useState} from "react";
 import {useInjection} from "../hooks/ioc.react";
 import UserTickets from "../../application/usecase/UserTickets";
 import {Reservation} from "../../domain/core/Reservation";
@@ -41,7 +40,9 @@ export default function Tickets() {
                 }
             });
 
-            return () => { cancelled = true; };
+            return () => {
+                cancelled = true;
+            };
         }, [user, navigation])
     );
 
@@ -54,7 +55,7 @@ export default function Tickets() {
 
     if (isEmpty) {
         return (
-            <View style={[styles.screen, {marginTop: 60, paddingHorizontal: 16}]}>
+            <View style={styles.screen}>
                 <Text style={styles.pageTitle}>Mes tickets</Text>
                 <Text style={[styles.ecDate, {textAlign: 'center', marginTop: 32}, {color: colors.black}]}>
                     Aucun ticket pour le moment.
@@ -64,7 +65,7 @@ export default function Tickets() {
     }
 
     return (
-        <View style={[styles.screen, {marginTop: 60, paddingHorizontal: 16}]}>
+        <View style={[styles.screen]}>
             <SectionList
                 sections={[
                     {title: "Mes tickets", data: upcomingTickets},
@@ -74,7 +75,7 @@ export default function Tickets() {
                 renderItem={({item}) => (
                     <EventCard
                         event={item.event}
-                        action={() => navigation.navigate("TicketsDetails", {token : item.token})}
+                        action={() => navigation.navigate("TicketsDetails", {token: item.token})}
                         actionName="Détails"
                     />
                 )}
