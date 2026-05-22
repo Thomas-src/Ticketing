@@ -1,3 +1,5 @@
+// Fichier généré par ia (claude)
+
 function sanitizeString(value: string): string {
     return value.trim().replace(/[<>'"`;]/g, "");
 }

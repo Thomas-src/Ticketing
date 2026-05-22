@@ -1,7 +1,7 @@
 import {Event} from "../../../domain/core/Event"
 import {Pressable, StyleSheet, Text, TextInput, View} from "react-native";
 import {colors} from "../../colors";
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useMemo, useState} from "react";
 import {useInjection} from "../../hooks/ioc.react";
 import SaveReservation from "../../../application/usecase/SaveReservation";
 import {Reservation} from "../../../domain/core/Reservation";
@@ -34,7 +34,7 @@ export default function ReservationStep3(props: Props) {
     const yearSub = new Date().getFullYear().toString().slice(0, 2);
     console.log(yearSub)
 
-    const formCorrect = useCallback(() => {
+    const formCorrect = useMemo(() => {
         const ibanRegex = /^BE\d{14}$/;
         const monthRegex = /^(0[1-9]|1[0-2])$/;
         const yearRegex = /^(202[6-9]|20[3-9]\d|2[1-9]\d{2}|[3-9]\d{3})$/;
@@ -49,7 +49,7 @@ export default function ReservationStep3(props: Props) {
     }, [iban, expirationMonth, expirationYear, cvc]);
 
     // Enregistrer la reservation, si aucun crash alors on va vers la page succes, sinon fail
-    const nextPage = async () => {
+    const nextPage = useCallback(async () => {
         const guests = [...props.names]; // copie indépendante
         const quantity = guests.length;
         const token = uuid();
@@ -73,7 +73,15 @@ export default function ReservationStep3(props: Props) {
                 props.onFail();
             }
         }
-    }
+    }, [
+        props.names,
+        props.event,
+        user,
+        iban,
+        cvc,
+        expirationMonth,
+        expirationYear,
+    ]);
 
     return (
         <View style={style.page}>
@@ -139,8 +147,8 @@ export default function ReservationStep3(props: Props) {
                 <Pressable style={style.backButton} onPress={() => props.onBack()}>
                     <Text style={style.ButtonText}>Retour</Text>
                 </Pressable>
-                <Pressable style={[style.nextButton, !formCorrect() && style.inputDisabled]} onPress={() => nextPage()}
-                           disabled={!formCorrect()}>
+                <Pressable style={[style.nextButton, !formCorrect && style.inputDisabled]} onPress={() => nextPage()}
+                           disabled={!formCorrect}>
                     <Text style={[style.ButtonText, style.w]}>Continuer</Text>
                 </Pressable>
                 {errors !== "" && (

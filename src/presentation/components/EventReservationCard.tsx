@@ -1,9 +1,9 @@
-import {Event} from "../../domain/core/Event";
 import {Reservation} from "../../domain/core/Reservation";
 import {FlatList, Image, Pressable, Text, View} from "react-native";
 import {styles} from "../styles";
 import {MapPin} from "lucide-react-native";
 import {colors} from "../colors";
+import {useCallback} from "react";
 
 type Props = {
     reservation: Reservation;
@@ -12,13 +12,13 @@ type Props = {
 };
 
 export default function EventReservationCard({reservation, action, actionName}: Props) {
-    const {title, startAt, tags, address} = reservation.event;
-    const formatHour = (date: Date) => {
+    const {title, startAt, endAt, tags, address} = reservation.event;
+    const formatHour = useCallback((date: Date) => {
         return date.toLocaleTimeString("fr-BE", {
             hour: "2-digit",
             hour12: false,
         });
-    };
+    }, []);
 
     return (
         <View style={styles.eventCard}>
@@ -34,7 +34,7 @@ export default function EventReservationCard({reservation, action, actionName}: 
                         {startAt.toLocaleDateString("fr-BE", {
                             day: "numeric",
                             month: "long",
-                        })} à {formatHour(startAt)} - {formatHour(startAt)}
+                        })} à {formatHour(startAt)} - {formatHour(endAt)}
                     </Text>
                     <View style={styles.eclocationContainer}>
                         <MapPin color={colors.white}/>

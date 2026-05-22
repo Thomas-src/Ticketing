@@ -33,14 +33,14 @@ export default function ManageEvent({navigation}: Props) {
             setLoading(false);
             setRefreshing(false);
         }
-    }, [events]);
+    }, [userEvents]);
 
     const handleRefresh = useCallback(() => {
         loadEvents(true);
     }, [loadEvents]);
     useEffect(() => {
         loadEvents();
-    }, []);
+    }, [loadEvents]);
 
     if (loading) {
         return (
@@ -71,7 +71,7 @@ export default function ManageEvent({navigation}: Props) {
                     })}/>
                 )}
                 contentContainerStyle={{gap: 12}}
-                refreshing={loading}
+                refreshing={refreshing}
                 onRefresh={handleRefresh}
             />
         </View>

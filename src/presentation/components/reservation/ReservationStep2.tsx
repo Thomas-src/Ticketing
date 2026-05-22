@@ -1,6 +1,6 @@
 import {FlatList, Pressable, StyleSheet, Text, TextInput, View} from "react-native";
 import {colors} from "../../colors";
-import {useState} from "react";
+import {useCallback, useMemo, useState} from "react";
 import {useAuth} from "../../context/AuthContext";
 
 type Props = {
@@ -18,14 +18,14 @@ export default function ReservationStep2(props: Props) {
         Array.from({length: props.count}, (_, i) => props.names[i] ?? "")
     );
 
-    const handleChange = (text: string, index: number) => {
+    const handleChange = useCallback((text: string, index: number) => {
         const updated = [...names];
         updated[index] = text;
         setNames(updated);
         props.onChange(updated);
-    };
+    }, [props.onChange]);
 
-    const allInputValid = () => {
+    const allInputValid = useMemo(() => {
         if (names.length == 0) {
             return false
         }
@@ -39,7 +39,29 @@ export default function ReservationStep2(props: Props) {
 
         console.log("Tout les champs sont rempli, passage à l'écran suivant")
         return true;
-    };
+    }, [names]);
+
+    const indexes = useMemo(
+        () => Array.from({length: props.count}, (_, i) => i),
+        [props.count]
+    );
+
+    const renderItem = useCallback(({item: index}: any) => {
+        return (
+            <View style={style.inputGroup}>
+                <Text style={style.label}>
+                    {index === 0 ? "Votre place :" : `Dénomination place ${index + 1}* :`}
+                </Text>
+
+                <TextInput
+                    style={[style.input, index === 0 && style.inputDisabled]}
+                    value={index === 0 ? `${user?.name}` : names[index]}
+                    onChangeText={(text) => index !== 0 && handleChange(text, index)}
+                    editable={index !== 0}
+                />
+            </View>
+        );
+    }, [names, user?.name, handleChange]);
 
     return (
         <View style={style.container}>
@@ -53,30 +75,18 @@ export default function ReservationStep2(props: Props) {
             </View>
 
             <FlatList
-                data={Array.from({length: props.count}, (_, i) => i)}
+                data={indexes}
                 keyExtractor={(item) => item.toString()}
-                renderItem={({item: index}) => (
-                    <View style={style.inputGroup}>
-                        <Text style={style.label}>
-                            {index === 0 ? "Votre place :" : `Dénomination place ${index + 1}* :`}
-                        </Text>
-                        <TextInput
-                            style={[style.input, index === 0 && style.inputDisabled]}
-                            value={index === 0 ? `${user?.name}` : names[index]}
-                            onChangeText={(text) => index !== 0 && handleChange(text, index)}
-                            editable={index !== 0}
-                        />
-                    </View>
-                )}
+                renderItem={renderItem}
             />
 
             <View style={style.buttonsStyles}>
                 <Pressable style={style.backButton} onPress={() => props.onBack()}>
                     <Text style={style.ButtonText}>Retour</Text>
                 </Pressable>
-                <Pressable style={[style.nextButton, !allInputValid() && style.pressableDisabled]} onPress={() => {
+                <Pressable style={[style.nextButton, !allInputValid && style.pressableDisabled]} onPress={() => {
                     props.onNext()
-                }} disabled={!allInputValid()}>
+                }} disabled={!allInputValid}>
                     <Text style={[style.ButtonText, style.w]}>Continuer</Text>
                 </Pressable>
             </View>

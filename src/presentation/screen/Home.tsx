@@ -4,7 +4,7 @@ import EventCard from "../components/EventCard";
 import {useAuth} from "../context/AuthContext";
 import GetAvaiblesEvents from "../../application/usecase/GetAvaiblesEvents";
 import {Event} from "../../domain/core/Event";
-import {useCallback, useEffect, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useInjection} from "../hooks/ioc.react";
 import {useNavigation} from "@react-navigation/native";
 import {NativeStackNavigationProp} from "@react-navigation/native-stack";
@@ -63,15 +63,18 @@ export default function Home() {
 
     useEffect(() => {
         loadEvents();
-    }, []);
+    }, [loadEvents]);
 
-    const filteredEvents = searchInput.trim()
-        ? events.filter(event =>
-            event.title.toLowerCase().includes(searchInput.toLowerCase()) ||
-            event.address.address.toLowerCase().includes(searchInput.toLowerCase())
-        )
-        : events;
+    const filteredEvents = useMemo(() => {
+        const q = searchInput.trim().toLowerCase();
+        if (!q) return events;
 
+        return events.filter(event =>
+            event.title.toLowerCase().includes(q) ||
+            event.address.address.toLowerCase().includes(q)
+        );
+    }, [events, searchInput]);
+    const openSearch = useCallback(() => setIsSearching(true), []);
     if (loading) {
         return (
             <View style={styles.screen}>
@@ -126,7 +129,7 @@ export default function Home() {
                 )}
 
                 <View
-                    onTouchEnd={() => setIsSearching(true)}
+                    onTouchEnd={openSearch}
                     style={{
                         width: 44,
                         height: 44,

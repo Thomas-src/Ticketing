@@ -1,8 +1,7 @@
-import { StyleSheet, View, Text } from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import {colors} from "../../colors";
-import {Calendar, Calendar1} from "lucide-react-native";
-import {styles} from "../../styles";
-
+import {Calendar} from "lucide-react-native";
+import {useCallback, useMemo} from "react";
 
 
 type Props = {
@@ -10,37 +9,42 @@ type Props = {
     endDate?: Date;
 };
 
-export default function ContextWhenCard({ beginDate, endDate }: Props) {
+export default function ContextWhenCard({beginDate, endDate}: Props) {
 
     if (!beginDate || !endDate) {
         return null;
     }
 
-    const sameDay =
-        beginDate.getFullYear() === endDate.getFullYear() &&
-        beginDate.getMonth() === endDate.getMonth() &&
-        beginDate.getDate() === endDate.getDate();
+    const sameDay = useMemo(() => {
+        if (!beginDate || !endDate) return false;
 
-    const formatDate = (date: Date) => {
+        return (
+            beginDate.getFullYear() === endDate.getFullYear() &&
+            beginDate.getMonth() === endDate.getMonth() &&
+            beginDate.getDate() === endDate.getDate()
+        );
+    }, [beginDate, endDate]);
+
+    const formatDate = useCallback((date: Date) => {
         return date.toLocaleDateString("fr-BE", {
             weekday: "short",
             day: "2-digit",
             month: "short",
             year: "numeric",
         });
-    };
+    }, []);
 
-    const formatTime = (date: Date) => {
+    const formatTime = useCallback((date: Date) => {
         return date.toLocaleTimeString("fr-BE", {
             hour: "2-digit",
             minute: "2-digit",
         });
-    };
+    }, []);
 
     return (
         <View style={cardStyles.container}>
-            <View style={cardStyles.fContainer} >
-                <Calendar color={colors.white} />
+            <View style={cardStyles.fContainer}>
+                <Calendar color={colors.white}/>
                 <Text style={[cardStyles.w, cardStyles.title]}>Quand ?</Text>
             </View>
 
@@ -66,12 +70,12 @@ const cardStyles = StyleSheet.create({
         borderRadius: 12,
         padding: 10,
     },
-    w : {
+    w: {
         color: colors.white,
     },
     title: {
-      fontSize: 16,
-      fontWeight: "bold",
+        fontSize: 16,
+        fontWeight: "bold",
     },
     fContainer: {
         display: "flex",

@@ -3,7 +3,7 @@ import {styles} from '../../styles';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AccountStackParamList} from '../../../types/RootStackParamList';
 import {useInjection} from "../../hooks/ioc.react";
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {Event} from "../../../domain/core/Event";
 import EventCard from "../../components/EventCard";
 import GetOwnerEvents from "../../../application/usecase/GetOwnerEvents"
@@ -18,13 +18,16 @@ export default function ManageEvent({navigation}: Props) {
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
-    const loadEvents = async (isRefresh = false) => {
+    const loadEvents = useCallback(async (isRefresh = false) => {
         try {
             if (isRefresh) setRefreshing(true);
             else setLoading(true);
+
             setError(null);
+
             const result = await userEvents.execute();
             setEvents(result);
+
         } catch (e: unknown) {
             console.error(e);
             if (e instanceof Error) setError(e.message);
@@ -33,11 +36,18 @@ export default function ManageEvent({navigation}: Props) {
             setLoading(false);
             setRefreshing(false);
         }
-    };
-
+    }, [userEvents]);
     useEffect(() => {
         loadEvents();
-    }, []);
+    }, [loadEvents]);
+
+    const handleRefresh = useCallback(() => {
+        loadEvents(true);
+    }, [loadEvents]);
+
+    const handleEdit = useCallback((id: string) => {
+        navigation.navigate("EditEvent", {eventId: id});
+    }, [navigation]);
     if (loading) {
         return (
             <View style={styles.screen}>
@@ -62,13 +72,11 @@ export default function ManageEvent({navigation}: Props) {
                 data={events}
                 keyExtractor={(item: Event) => item.id}
                 renderItem={({item}) => (
-                    <EventCard event={item} actionName="Modifier" action={() => navigation.navigate("EditEvent", {
-                        eventId: item.id
-                    })}/>
+                    <EventCard event={item} actionName="Modifier" action={() => handleEdit(item.id)}/>
                 )}
                 contentContainerStyle={{gap: 12}}
-                refreshing={loading}
-                onRefresh={() => loadEvents(true)}
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
             />
         </View>
     );

@@ -3,6 +3,7 @@ import {styles} from "../styles";
 import {MapPin} from "lucide-react-native";
 import {colors} from "../colors";
 import {Event} from "../../domain/core/Event"
+import {useCallback} from "react";
 
 type Props = {
     event: Event;
@@ -12,13 +13,13 @@ type Props = {
 
 
 export default function EventCard({event, action, actionName}: Props) {
-    const {title, startAt, tags, address} = event;
-    const formatHour = (date: Date) => {
+    const {title, startAt, endAt, tags, address} = event;
+    const formatHour = useCallback((date: Date) => {
         return date.toLocaleTimeString("fr-BE", {
             hour: "2-digit",
             hour12: false,
         });
-    };
+    }, []);
 
     return (
         <View style={styles.eventCard}>
@@ -34,7 +35,7 @@ export default function EventCard({event, action, actionName}: Props) {
                         {startAt.toLocaleDateString("fr-BE", {
                             day: "numeric",
                             month: "long",
-                        })} à {formatHour(startAt)} - {formatHour(startAt)}
+                        })} à {formatHour(startAt)} - {formatHour(endAt)}
                     </Text>
                     <View style={styles.eclocationContainer}>
                         <MapPin color={colors.white}/>

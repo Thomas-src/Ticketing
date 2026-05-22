@@ -91,7 +91,7 @@ export default function VerifyTicket({route}: Props) {
     const resetScan = useCallback(() => {
         resetQr();
         resetNfc();
-    }, []);
+    }, [resetQr, resetNfc]);
 
     const handleSelectMode = useCallback(async (selected: ScanMode) => {
         await cancelNfc();
@@ -101,7 +101,7 @@ export default function VerifyTicket({route}: Props) {
         if (selected === 'nfc') {
             scan();
         }
-    }, []);
+    }, [cancelNfc, resetScan, scan]);
 
     const statusColor = result?.ok ? colors.green : result?.reason === 'already_scanned' ? colors.warn : colors.red;
 

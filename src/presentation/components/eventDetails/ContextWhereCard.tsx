@@ -2,6 +2,7 @@ import {Linking, Platform, Pressable, StyleSheet, Text, View} from "react-native
 import {colors} from "../../colors";
 import {MapPin, SquareArrowOutUpRight} from 'lucide-react-native';
 import {Address} from "../../../domain/core/Address";
+import {useCallback, useMemo} from "react";
 
 type Props = {
     adress?: Address;
@@ -25,12 +26,21 @@ const openMaps = (props: Props) => {
 }
 
 export default function ContextWhereCard(props: Props) {
-    const splittedAddress = props.adress?.address.split(',');
-    const formattedAddress = splittedAddress?.at(0) + ',\n' + splittedAddress?.at(1);
+    const formattedAddress = useMemo(() => {
+        if (!props.adress?.address) return "";
+
+        const [first, second] = props.adress.address.split(',');
+
+        return second ? `${first},\n${second}` : first;
+    }, [props.adress?.address]);
 
     if (!props.adress) {
         return null;
     }
+    const handleOpenMaps = useCallback(() => {
+        if (!props.adress) return;
+        openMaps(props);
+    }, [props.adress]);
 
     return (
         <View style={cardStyles.container}>
@@ -38,7 +48,7 @@ export default function ContextWhereCard(props: Props) {
                 <MapPin color={colors.white}/>
                 <Text style={[cardStyles.w, cardStyles.title]}>Où ?</Text>
                 <Pressable style={[cardStyles.button, cardStyles.row, cardStyles.gap]}
-                           onPress={() => openMaps(props)}>
+                           onPress={handleOpenMaps}>
                     <Text style={cardStyles.db}>Itinéraire</Text>
                     <SquareArrowOutUpRight color={colors.blue} height={15} width={15}/>
                 </Pressable>

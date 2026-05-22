@@ -1,5 +1,5 @@
 import {Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View,} from 'react-native';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../types/RootStackParamList';
@@ -97,9 +97,13 @@ export default function EditEvent({navigation, route}: Props) {
     const [showTagsDropdown, setShowTagsDropdown] = useState(false);
 
     const [errors, setErrors] = useState<ValidationError[]>([]);
-    const getError = (field: string) => errors.find((e) => e.field === field)?.message;
-    const clearError = (field: string) => setErrors((prev) => prev.filter((e) => e.field !== field));
-
+    const getError = useCallback(
+        (field: string) => errors.find((e) => e.field === field)?.message,
+        [errors]
+    );
+    const clearError = useCallback((field: string) => {
+        setErrors((prev) => prev.filter((e) => e.field !== field));
+    }, []);
 
     useEffect(() => {
         const load = async () => {
@@ -151,9 +155,18 @@ export default function EditEvent({navigation, route}: Props) {
         loadTags();
     }, [tagsLoaded]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = useCallback(async () => {
         const validationErrors = validateEvent({
-            title, description, seats, tags, startAt, endAt, addressName, address, image, price
+            title,
+            description,
+            seats,
+            tags,
+            startAt,
+            endAt,
+            addressName,
+            address,
+            image,
+            price
         });
 
         if (validationErrors.length > 0) {
@@ -162,25 +175,47 @@ export default function EditEvent({navigation, route}: Props) {
         }
 
         setErrors([]);
+
         const EventAddress = new Address(addressName, address, city);
         const EventTags: Tag[] = tags.map((tag) => new Tag(tag));
-        const event = new Event(eventId, title, description, parseInt(seats, 10), startAt, endAt, image, EventTags, parseFloat(price), EventAddress);
+        const event = new Event(
+            eventId,
+            title,
+            description,
+            parseInt(seats, 10),
+            startAt,
+            endAt,
+            image,
+            EventTags,
+            parseFloat(price),
+            EventAddress
+        );
 
         try {
             const updated = await updateEvent.execute(eventId, event);
             if (updated) {
-                navigation.navigate("Details", {eventId: eventId});
-            } else {
-
+                navigation.navigate("Details", {eventId});
             }
-
         } catch (error) {
             console.error(error);
             setErrors([{field: "none", message: "Une erreur s'est produite, veuillez réessayer."}]);
         }
-    };
-
-    const pickImage = async () => {
+    }, [
+        title,
+        description,
+        seats,
+        tags,
+        startAt,
+        endAt,
+        addressName,
+        address,
+        image,
+        price,
+        eventId,
+        updateEvent,
+        navigation
+    ]);
+    const pickImage = useCallback(async () => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (!permissionResult.granted) {
             Alert.alert('Permission required', 'Permission to access the media library is required.');
@@ -197,12 +232,13 @@ export default function EditEvent({navigation, route}: Props) {
             setImage(result.assets[0].uri);
             setImageName(result.assets[0].fileName ?? '');
         }
-    };
+    }, [clearError]);
 
-    const toggleTag = (selectedTag: string) => {
-        setTags((prev) => prev.includes(selectedTag) ? prev.filter((t) => t !== selectedTag) : [...prev, selectedTag]);
+    const toggleTag = useCallback((selectedTag: string) => {
+        setTags((prev) => prev.includes(selectedTag) ? prev.filter((t) => t !== selectedTag) : [...prev, selectedTag]
+        );
         clearError('tags');
-    };
+    }, [clearError]);
 
     if (loading) {
         return (

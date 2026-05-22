@@ -1,6 +1,6 @@
 import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {colors} from "../../colors";
-import {useState} from "react";
+import {useCallback, useMemo, useState} from "react";
 import {Event} from "../../../domain/core/Event"
 
 type Props = {
@@ -14,12 +14,21 @@ type Props = {
 
 export default function ReservationStep1(props: Props) {
     const [count, setCount] = useState(0);
-    const [inputText, setInputText] = useState("");
 
     const countValid = count > 0;
 
-    const totalPrice = count * props.event.price;
+    const totalPrice = useMemo(
+        () => count * props.event.price,
+        [count, props.event.price]
+    );
 
+    const handleNext = useCallback(() => {
+        props.onNext();
+    }, [props.onNext]);
+
+    const handleBack = useCallback(() => {
+        props.onBack();
+    }, [props.onBack]);
 
     return (
         <View style={style.container}>
@@ -36,9 +45,8 @@ export default function ReservationStep1(props: Props) {
                 <TextInput
                     style={style.input}
                     keyboardType="numeric"
-                    value={inputText}
+                    value={String(count || "")}
                     onChangeText={(text) => {
-                        setInputText(text);
                         const value = parseInt(text) || 0;
                         setCount(value);
                         props.onChange(value);
@@ -50,14 +58,14 @@ export default function ReservationStep1(props: Props) {
                 <Text style={style.textDesign}>Total : {totalPrice} € </Text>
             </View>
             <View style={style.buttonsStyles}>
-                <Pressable style={style.backButton} onPress={() => props.onBack()}><Text
+                <Pressable style={style.backButton} onPress={handleBack}><Text
                     style={style.ButtonText}>Retour</Text></Pressable>
                 <Pressable
                     style={[
                         style.nextButton,
                         !countValid && style.nextButtonDisabled
                     ]}
-                    onPress={() => props.onNext()}
+                    onPress={handleNext}
                     disabled={!countValid}
                 >
                     <Text style={[style.ButtonText, style.w]}>

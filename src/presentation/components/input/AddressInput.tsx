@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useCallback, useRef, useState} from "react";
 import {FlatList, Pressable, StyleSheet, Text, TextInput, View,} from "react-native";
 
 import {useInjection} from "../../hooks/ioc.react";
@@ -20,7 +20,7 @@ export default function AddressInput({onSelect, value}: Props) {
 
     const locationFinder = useInjection<LocationFinder>(LocationFinder);
 
-    const search = (text: string) => {
+    const search = useCallback((text: string) => {
         setInputValue(text);
 
         if (timeoutRef.current) {
@@ -40,18 +40,47 @@ export default function AddressInput({onSelect, value}: Props) {
                 console.error("AddressInput search error:", e);
             }
         }, 400);
-    };
+    }, [locationFinder]);
 
-    const handleSelect = (location: Location) => {
+    const handleSelect = useCallback((location: Location) => {
         setInputValue(location.address);
         setResults([]);
         setIsFocused(false);
 
         onSelect(location);
-    };
+    }, [onSelect]);
+
+    const renderItem = useCallback(({item, index}: any) => {
+        return (
+            <Pressable
+                onPress={() => handleSelect(item)}
+                style={({pressed}) => [
+                    localStyles.item,
+                    index < results.length - 1 && localStyles.itemBorder,
+                    pressed && localStyles.itemPressed,
+                ]}
+            >
+                <Text style={localStyles.itemText} numberOfLines={2}>
+                    {item.address}
+                </Text>
+            </Pressable>
+        );
+    }, [handleSelect, results.length]);
+
+    const handleBlur = useCallback(() => {
+        setTimeout(() => setIsFocused(false), 200);
+    }, []);
 
     const showDropdown = isFocused && results.length > 0;
 
+    React.useEffect(() => {
+        return () => {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+        };
+    }, []);
+    
     return (
         <View
             style={[
@@ -63,7 +92,7 @@ export default function AddressInput({onSelect, value}: Props) {
                 value={inputValue}
                 onChangeText={search}
                 onFocus={() => setIsFocused(true)}
-                onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+                onBlur={handleBlur}
                 placeholder="Rechercher une adresse"
                 placeholderTextColor="rgba(255,255,255,0.45)"
                 style={localStyles.input}
@@ -80,24 +109,7 @@ export default function AddressInput({onSelect, value}: Props) {
                         }
                         keyboardShouldPersistTaps="handled"
                         scrollEnabled={false}
-                        renderItem={({item, index}) => (
-                            <Pressable
-                                onPress={() => handleSelect(item)}
-                                style={({pressed}) => [
-                                    localStyles.item,
-                                    index < results.length - 1 &&
-                                    localStyles.itemBorder,
-                                    pressed && localStyles.itemPressed,
-                                ]}
-                            >
-                                <Text
-                                    style={localStyles.itemText}
-                                    numberOfLines={2}
-                                >
-                                    {item.address}
-                                </Text>
-                            </Pressable>
-                        )}
+                        renderItem={renderItem}
                     />
                 </View>
             )}
