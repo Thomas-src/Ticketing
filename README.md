@@ -1,7 +1,6 @@
-# Versions des frameworks
-
-- Expo 55
-- React Native 0.83
+![Expo Go](https://img.shields.io/badge/Expo%20Go-55.0.24-000020?style=for-the-badge&logo=expo&logoColor=white)
+![React Native](https://img.shields.io/badge/React%20Native-0.83-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![PocketBase](https://img.shields.io/badge/PocketBase-v0.36.9-B8DBE4?style=for-the-badge&logo=pocketbase&logoColor=black)
 
 # Installation
 
@@ -33,6 +32,15 @@ npm run web
 
 Pour démarrer l'application, nous vous conseillons d'exécuter la commande `npx expo run:android` car cette application
 nécessite l'accès au lecteur NFC qui n'est pas géré par expo-go.
+
+# Accès PocketBase
+
+[Serveur Pocketbase](https://pocketbase.tomstudio.eu/_/#/login)
+
+Identifiants :
+
+- Login : `derdeyn.thomas@gmail.com`
+- Mot de passe : `yum3wKDsW5dzCS`
 
 # Comptes
 
@@ -79,12 +87,3 @@ Utilisé notamment pour tout les boutons "Décoratifs" (Ex : pin, calendar...)
 
 - Pocketbase
 - Version : ^0.26.8
-
-# Accès PocketBase
-
-[Serveur Pocketbase](https://pocketbase.tomstudio.eu/)
-
-Identifiants :
-
-- Login : `derdeyn.thomas@gmail.com`
-- Mot de passe : `yum3wKDsW5dzCS`
